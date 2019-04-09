@@ -24,13 +24,13 @@ let translate program =
 
   (* Create the LLVM compilation module into which
      we will generate code *)
-  let the_module = L.create_module context "NanoC" in
+  let the_module = L.create_module context "Asp" in
 
   (* Get types from the context *)
   let i32_t      = L.i32_type    context
   and i1_t       = L.i1_type     context in
 
-  (* Return the LLVM type for a NanoC type *)
+  (* Return the LLVM type for a Asp type *)
   let ltype_of_typ = function
       A.Int   -> i32_t
     | A.Bool  -> i1_t

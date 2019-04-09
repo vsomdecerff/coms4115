@@ -2,7 +2,7 @@
 
 (* Ocamllex scanner for ASP *)
 
-{ open Nanocparse }
+{ open Aspparse }
 
 let digit = ['0'-'9']
 let letter = ['a'-'z' 'A'-'Z']
