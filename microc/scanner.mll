@@ -17,6 +17,9 @@ rule token = parse
 | ','      { COMMA }
 | '+'      { PLUS }
 | '-'      { MINUS }
+| '*'      { TIMES }
+| '/'	   { DIVIDE }
+| '%'	   { MODULO }
 | '='      { ASSIGN }
 | "=="     { EQ }
 | "!="     { NEQ }
@@ -25,6 +28,8 @@ rule token = parse
 | "||"     { OR }
 | "if"     { IF }
 | "else"   { ELSE }
+| "switch" { SWITCH }
+| "case"   { CASE }
 | "while"  { WHILE }
 | "for"    { FOR }
 (* RETURN *)

@@ -104,7 +104,7 @@ let check (globals, functions) =
         if t1 = t2 then
           (* Determine expression type based on operator and operand types *)
           let t = match op with
-              Add | Sub when t1 = Int -> Int
+              Add | Sub | Mul | Div | Mod when t1 = Int -> Int
             | Equal | Neq -> Bool
             | Less when t1 = Int -> Bool
             | And | Or when t1 = Bool -> Bool
@@ -140,6 +140,12 @@ let check (globals, functions) =
       | Block sl :: sl'  -> check_stmt_list (sl @ sl') (* Flatten blocks *)
       | s :: sl -> check_stmt s :: check_stmt_list sl
     (* Return a semantically-checked statement i.e. containing sexprs *)
+
+	and check_case_list e ls =
+      match ls with
+      | [] -> Block([])
+      | Case(ce, cs) :: sl' -> If( (Binop(e, Equal, ce)) , cs, Block((check_case_list e sl')::[])) 
+
     and check_stmt =function
       (* A block is correct if each statement is correct and nothing
          follows any Return statement.  Nested blocks are flattened. *)
@@ -147,6 +153,9 @@ let check (globals, functions) =
       | Expr e -> SExpr (check_expr e)
       | If(e, st1, st2) ->
         SIf(check_bool_expr e, check_stmt st1, check_stmt st2)
+
+	  | Switch(e, Block sl) -> check_stmt (check_case_list e sl)
+
       | While(e, st) ->
         SWhile(check_bool_expr e, check_stmt st)
 
