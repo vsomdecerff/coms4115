@@ -26,6 +26,8 @@ rule token = parse
 | "*="     { ASSIGNTIMES }
 | "/="     { ASSIGNDIVIDE }
 | "%="     { ASSIGNMODULO }
+| "++"	   { INCREMENT }
+| "--"     { DECREMENT }
 | "=="     { EQ }
 | "!="     { NEQ }
 | '<'      { LT }

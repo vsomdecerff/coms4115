@@ -6,6 +6,7 @@ open Ast
 
 %token SEMI LPAREN RPAREN LBRACE RBRACE 
 %token PLUS MINUS TIMES DIVIDE MODULO ASSIGN 
+%token INCREMENT DECREMENT
 %token ASSIGNPLUS ASSIGNMINUS ASSIGNTIMES ASSIGNDIVIDE ASSIGNMODULO
 %token EQ NEQ LT AND OR
 %token IF ELSE SWITCH CASE DEFAULT WHILE FOR INT BOOL
@@ -25,6 +26,7 @@ open Ast
 %left EQ NEQ
 %left LT
 %left PLUS MINUS
+%left INCREMENT DECREMENT
 %left TIMES DIVIDE MODULO
 
 %%
@@ -99,6 +101,8 @@ expr:
   | expr TIMES  expr { Binop($1, Mul, $3) }
   | expr DIVIDE expr { Binop($1, Div, $3) }
   | expr MODULO expr { Binop($1, Mod, $3) }
+  | expr INCREMENT   { UnPostop($1, Incr) }
+  | expr DECREMENT   { UnPostop($1, Decr) }
   | expr EQ     expr { Binop($1, Equal, $3)   }
   | expr NEQ    expr { Binop($1, Neq, $3)     }
   | expr LT     expr { Binop($1, Less,  $3)   }
