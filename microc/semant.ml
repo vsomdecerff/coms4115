@@ -149,6 +149,10 @@ let check (globals, functions) =
         SIf(check_bool_expr e, check_stmt st1, check_stmt st2)
       | While(e, st) ->
         SWhile(check_bool_expr e, check_stmt st)
+
+	  | For(e1, e2, e3, Block sl) ->
+		SWhile(check_bool_expr e2, check_stmt (Block (List.rev (Expr e3 :: List.rev (Expr e1 ::sl)))))
+
       | Return e ->
         let (t, e') = check_expr e in
         if t = func.rtyp then SReturn (t, e')

@@ -26,6 +26,7 @@ rule token = parse
 | "if"     { IF }
 | "else"   { ELSE }
 | "while"  { WHILE }
+| "for"    { FOR }
 (* RETURN *)
 | "return" { RETURN }
 | "int"    { INT }
