@@ -151,7 +151,7 @@ let check (globals, functions) =
         SWhile(check_bool_expr e, check_stmt st)
 
 	  | For(e1, e2, e3, Block sl) ->
-		SWhile(check_bool_expr e2, check_stmt (Block (List.rev (Expr e3 :: List.rev (Expr e1 ::sl)))))
+		check_stmt (Block (Expr e1 :: While(e2, Block (List.rev (Expr e3 :: List.rev sl ))) :: []))
 
       | Return e ->
         let (t, e') = check_expr e in
