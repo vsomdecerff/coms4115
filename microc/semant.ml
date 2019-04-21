@@ -143,6 +143,8 @@ let check (globals, functions) =
 	let rec check_multi_case_list e sl = 
 	  match sl with 
 	  | [] -> []
+	  | Case(ce, cs) :: Default(ds) :: [] -> 
+			If( (Binop(e, Equal, ce)) , cs, ds) :: (check_multi_case_list e [])
 	  | Case(ce, cs) :: sl' -> If( (Binop(e, Equal, ce)) , cs, Block([])) :: (check_multi_case_list e sl')
 	in
 

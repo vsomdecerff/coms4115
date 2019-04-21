@@ -6,7 +6,7 @@ open Ast
 
 %token SEMI LPAREN RPAREN LBRACE RBRACE PLUS MINUS TIMES DIVIDE MODULO ASSIGN
 %token EQ NEQ LT AND OR
-%token IF ELSE SWITCH CASE WHILE FOR INT BOOL
+%token IF ELSE SWITCH CASE DEFAULT WHILE FOR INT BOOL
 /* return, COMMA token */
 %token RETURN COMMA
 %token <int> LITERAL
@@ -82,6 +82,7 @@ stmt:
   | IF LPAREN expr RPAREN stmt ELSE stmt    { If($3, $5, $7) }
   | SWITCH LPAREN expr RPAREN stmt		 	{ Switch($3, $5) }
   | CASE LPAREN expr RPAREN stmt            { Case($3, $5)   }
+  | DEFAULT stmt							{ Default($2)    }
   | WHILE LPAREN expr RPAREN stmt           { While ($3, $5)  }
   | FOR LPAREN expr SEMI expr SEMI expr RPAREN stmt { For($3, $5, $7, $9) } 
   /* return */

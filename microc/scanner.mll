@@ -30,6 +30,7 @@ rule token = parse
 | "else"   { ELSE }
 | "switch" { SWITCH }
 | "case"   { CASE }
+| "default"{ DEFAULT }
 | "while"  { WHILE }
 | "for"    { FOR }
 (* RETURN *)

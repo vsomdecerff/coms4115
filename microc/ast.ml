@@ -18,6 +18,7 @@ type stmt =
   | Expr of expr
   | If of expr * stmt * stmt
   | Case of expr * stmt
+  | Default of stmt 
   | Switch of expr * stmt
   | While of expr * stmt
   | For of expr * expr * expr * stmt
@@ -71,6 +72,7 @@ let rec string_of_stmt = function
                       string_of_stmt s1 ^ "else\n" ^ string_of_stmt s2
   | Switch(e, s) -> "switch (" ^ string_of_expr e ^  ") " ^ string_of_stmt s
   | Case(e, s) -> "case (" ^ string_of_expr e ^  ") " ^ string_of_stmt s
+  | Default(s) -> "default " ^ string_of_stmt s
   | While(e, s) -> "while (" ^ string_of_expr e ^ ") " ^ string_of_stmt s
   | For(e1, e2, e3, s) -> "for (" ^ string_of_expr e1 ^ "; " ^ string_of_expr e2 ^ "; " ^ string_of_expr e3 ^ ") " ^ 
 						   string_of_stmt s
