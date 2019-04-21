@@ -4,7 +4,8 @@
 open Ast
 %}
 
-%token SEMI LPAREN RPAREN LBRACE RBRACE PLUS MINUS TIMES DIVIDE MODULO ASSIGN
+%token SEMI LPAREN RPAREN LBRACE RBRACE 
+%token PLUS MINUS TIMES DIVIDE MODULO ASSIGN ASSIGNPLUS
 %token EQ NEQ LT AND OR
 %token IF ELSE SWITCH CASE DEFAULT WHILE FOR INT BOOL
 /* return, COMMA token */
@@ -17,7 +18,7 @@ open Ast
 %start program
 %type <Ast.program> program
 
-%right ASSIGN
+%right ASSIGN ASSIGNPLUS
 %left OR
 %left AND
 %left EQ NEQ
@@ -103,6 +104,7 @@ expr:
   | expr AND    expr { Binop($1, And,   $3)   }
   | expr OR     expr { Binop($1, Or,    $3)   }
   | ID ASSIGN expr   { Assign($1, $3)         }
+  | ID ASSIGNPLUS expr { AssignBinop($1, Add, $3) }
   | LPAREN expr RPAREN { $2                   }
   /* call */
   | ID LPAREN args_opt RPAREN { Call ($1, $3)  }

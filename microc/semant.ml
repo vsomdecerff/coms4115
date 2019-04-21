@@ -85,6 +85,7 @@ let check (globals, functions) =
         Literal l -> (Int, SLiteral l)
       | BoolLit l -> (Bool, SBoolLit l)
       | Id var -> (type_of_identifier var, SId var)
+	  | AssignBinop(var, op, e) -> check_expr (Assign(var, Binop(Id var, op, e)))
       | Assign(var, e) as ex ->
         let lt = type_of_identifier var
         and (rt, e') = check_expr e in
