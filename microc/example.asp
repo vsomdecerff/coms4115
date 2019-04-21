@@ -23,6 +23,17 @@ int main() {
   print(gcd(99,121));
   print(gcd(a,b));
 
+  i = 0;
+  i +=4;
+  if ( i == 4)
+  {
+	print(4);
+  }
+  else
+  { 
+	print(5);
+  }
+
   for ( i = 0; i < 4; i = i + 1)
   {
      print(i);
