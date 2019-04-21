@@ -1,8 +1,6 @@
+(* Ocamllex scanner for MicroC *)
 
-
-(* Ocamllex scanner for ASP *)
-
-{ open Aspparse }
+{ open Microcparse }
 
 let digit = ['0'-'9']
 let letter = ['a'-'z' 'A'-'Z']
@@ -15,6 +13,8 @@ rule token = parse
 | '{'      { LBRACE }
 | '}'      { RBRACE }
 | ';'      { SEMI }
+(* COMMA *)
+| ','      { COMMA }
 | '+'      { PLUS }
 | '-'      { MINUS }
 | '='      { ASSIGN }
@@ -26,12 +26,14 @@ rule token = parse
 | "if"     { IF }
 | "else"   { ELSE }
 | "while"  { WHILE }
+(* RETURN *)
+| "return" { RETURN }
 | "int"    { INT }
 | "bool"   { BOOL }
 | "true"   { BLIT(true)  }
 | "false"  { BLIT(false) }
-| digit+ as lxm  { LITERAL(int_of_string lxm)}
-| letter (letter | digit | '_')* as lxm { ID(lxm) }
+| digit+ as lem  { LITERAL(int_of_string lem) }
+| letter (digit | letter | '_')* as lem { ID(lem) }
 | eof { EOF }
 | _ as char { raise (Failure("illegal character " ^ Char.escaped char)) }
 
