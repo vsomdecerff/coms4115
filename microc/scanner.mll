@@ -22,6 +22,10 @@ rule token = parse
 | '%'	   { MODULO }
 | '='      { ASSIGN }
 | "+="	   { ASSIGNPLUS }
+| "-="     { ASSIGNMINUS }
+| "*="     { ASSIGNTIMES }
+| "/="     { ASSIGNDIVIDE }
+| "%="     { ASSIGNMODULO }
 | "=="     { EQ }
 | "!="     { NEQ }
 | '<'      { LT }
