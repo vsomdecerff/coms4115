@@ -135,16 +135,22 @@ let check (globals, functions) =
       |  _ -> raise (Failure ("expected Boolean expression in " ^ string_of_expr e))
     in
 
+	let rec check_nested_case_list e sl =
+      match sl with
+      | [] -> Block([])
+      | Case(ce, cs) :: sl' -> If( (Binop(e, Equal, ce)) , cs, Block((check_nested_case_list e sl')::[]))
+	in 
+	let rec check_multi_case_list e sl = 
+	  match sl with 
+	  | [] -> []
+	  | Case(ce, cs) :: sl' -> If( (Binop(e, Equal, ce)) , cs, Block([])) :: (check_multi_case_list e sl')
+	in
+
     let rec check_stmt_list =function
         [] -> []
       | Block sl :: sl'  -> check_stmt_list (sl @ sl') (* Flatten blocks *)
       | s :: sl -> check_stmt s :: check_stmt_list sl
     (* Return a semantically-checked statement i.e. containing sexprs *)
-
-	and check_case_list e ls =
-      match ls with
-      | [] -> Block([])
-      | Case(ce, cs) :: sl' -> If( (Binop(e, Equal, ce)) , cs, Block((check_case_list e sl')::[])) 
 
     and check_stmt =function
       (* A block is correct if each statement is correct and nothing
@@ -154,7 +160,7 @@ let check (globals, functions) =
       | If(e, st1, st2) ->
         SIf(check_bool_expr e, check_stmt st1, check_stmt st2)
 
-	  | Switch(e, Block sl) -> check_stmt (check_case_list e sl)
+	  | Switch(e, Block sl) -> check_stmt (Block(check_multi_case_list e sl))
 
       | While(e, st) ->
         SWhile(check_bool_expr e, check_stmt st)
