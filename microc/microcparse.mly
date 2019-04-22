@@ -102,15 +102,15 @@ expr:
   | expr TIMES  expr { Binop($1, Mul, $3) }
   | expr DIVIDE expr { Binop($1, Div, $3) }
   | expr MODULO expr { Binop($1, Mod, $3) }
-  | expr INCREMENT   { UnPostop($1, Incr) }
-  | expr DECREMENT   { UnPostop($1, Decr) }
+  | ID INCREMENT   { UnPostop($1, Incr) }
+  | ID DECREMENT   { UnPostop($1, Decr) }
   | NOT expr %prec NOT 		 { UnPreop(Not, $2)   }
   | expr EQ     expr { Binop($1, Equal, $3)   }
   | expr NEQ    expr { Binop($1, Neq, $3)     }
   | expr LT     expr { Binop($1, Less,  $3)   }
   | expr GT     expr { Binop($1, Great,  $3)   }
-  | expr GEQ    expr { Binop($1, LessEqual,  $3)   }
-  | expr LEQ    expr { Binop($1, GreatEqual,  $3)   }
+  | expr LEQ    expr { Binop($1, LessEqual,  $3)   }
+  | expr GEQ    expr { Binop($1, GreatEqual,  $3)   }
   | expr AND    expr { Binop($1, And,   $3)   }
   | expr OR     expr { Binop($1, Or,    $3)   }
   | ID ASSIGN expr   { Assign($1, $3)         }

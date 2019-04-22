@@ -86,10 +86,10 @@ let check (globals, functions) =
       | BoolLit l -> (Bool, SBoolLit l)
       | Id var -> (type_of_identifier var, SId var)
 	  | AssignBinop(var, op, e) -> check_expr (Assign(var, Binop(Id var, op, e)))
-	  | UnPostop(e, op) -> let op' = match op with 
+	  | UnPostop(var, op) -> let op' = match op with 
 							   Incr -> Add 
 							 | Decr -> Sub 
-						   in check_expr (Binop(e, op', Literal 1))
+						   in check_expr (Assign(var, (Binop(Id var, op', Literal(1)))))
 
  	  | UnPreop(op, e) -> (Bool, SUnPreop(op, (check_bool_expr e)))
       | Assign(var, e) as ex ->
