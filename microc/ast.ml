@@ -1,6 +1,6 @@
 (* Abstract Syntax Tree and functions for printing it *)
 
-type op = Add | Sub | Mul | Div | Mod |  Equal | Neq | Less | And | Or | Incr | Decr | Not 
+type op = Add | Sub | Mul | Div | Mod |  Equal | Neq | Less | Great | LessEqual | GreatEqual | And | Or | Incr | Decr | Not 
 
 type typ = Int | Bool
 
@@ -52,6 +52,9 @@ let string_of_op = function
   | Equal -> "=="
   | Neq -> "!="
   | Less -> "<"
+  | Great -> ">"
+  | LessEqual -> "<="
+  | GreatEqual -> ">="
   | And -> "&&"
   | Or -> "||"
   | Incr -> "++"

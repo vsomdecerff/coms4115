@@ -91,7 +91,7 @@ if_end:                                           ; preds = %else, %then
   %tmp13 = add i32 %i12, 4
   store i32 %tmp13, i32* %i
   %i14 = load i32, i32* %i
-  %tmp15 = icmp eq i32 %i14, 4
+  %tmp15 = icmp sle i32 %i14, 4
   br i1 %tmp15, label %then16, label %else18
 
 then16:                                           ; preds = %if_end

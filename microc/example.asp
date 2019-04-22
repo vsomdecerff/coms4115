@@ -37,7 +37,7 @@ int main() {
 
   i = 0;
   i += 4;
-  if ( i == 4)
+  if ( i >= 4)
   {
 	print(4);
   }

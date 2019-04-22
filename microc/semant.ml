@@ -113,7 +113,7 @@ let check (globals, functions) =
           let t = match op with
               Add | Sub | Mul | Div | Mod when t1 = Int -> Int
             | Equal | Neq -> Bool
-            | Less when t1 = Int -> Bool
+            | Less | Great | LessEqual | GreatEqual  when t1 = Int -> Bool
             | And | Or when t1 = Bool -> Bool
             | _ -> raise (Failure err)
           in

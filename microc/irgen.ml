@@ -116,6 +116,9 @@ let translate (globals, functions) =
          | A.Equal   -> L.build_icmp L.Icmp.Eq
          | A.Neq     -> L.build_icmp L.Icmp.Ne
          | A.Less    -> L.build_icmp L.Icmp.Slt
+		 | A.Great   -> L.build_icmp L.Icmp.Sgt
+         | A.LessEqual    -> L.build_icmp L.Icmp.Sle
+         | A.GreatEqual   -> L.build_icmp L.Icmp.Sge
         ) e1' e2' "tmp" builder
 	  | SUnPreop(op, e) -> 
 		let e' = build_expr builder e in

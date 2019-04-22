@@ -8,7 +8,7 @@ open Ast
 %token PLUS MINUS TIMES DIVIDE MODULO ASSIGN 
 %token INCREMENT DECREMENT
 %token ASSIGNPLUS ASSIGNMINUS ASSIGNTIMES ASSIGNDIVIDE ASSIGNMODULO
-%token NOT EQ NEQ LT AND OR
+%token NOT EQ NEQ LT GT LEQ GEQ AND OR
 %token IF ELSE SWITCH CASE DEFAULT WHILE FOR INT BOOL
 /* return, COMMA token */
 %token RETURN COMMA
@@ -23,8 +23,8 @@ open Ast
 %right ASSIGN ASSIGNPLUS ASSIGNMINUS ASSIGNTIMES ASSIGNDIVIDE ASSIGNMODULO
 %left OR
 %left AND
-%left EQ NEQ
-%left LT
+%left EQ NEQ 
+%left LT GT LEQ GEQ
 %left PLUS MINUS
 %left INCREMENT DECREMENT
 %left TIMES DIVIDE MODULO
@@ -108,6 +108,9 @@ expr:
   | expr EQ     expr { Binop($1, Equal, $3)   }
   | expr NEQ    expr { Binop($1, Neq, $3)     }
   | expr LT     expr { Binop($1, Less,  $3)   }
+  | expr GT     expr { Binop($1, Great,  $3)   }
+  | expr GEQ    expr { Binop($1, LessEqual,  $3)   }
+  | expr LEQ    expr { Binop($1, GreatEqual,  $3)   }
   | expr AND    expr { Binop($1, And,   $3)   }
   | expr OR     expr { Binop($1, Or,    $3)   }
   | ID ASSIGN expr   { Assign($1, $3)         }
