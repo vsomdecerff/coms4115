@@ -86,10 +86,12 @@ let check (globals, functions) =
       | BoolLit l -> (Bool, SBoolLit l)
       | Id var -> (type_of_identifier var, SId var)
 	  | AssignBinop(var, op, e) -> check_expr (Assign(var, Binop(Id var, op, e)))
-	  | UnPostop(e, op) -> let bop = match op with 
+	  | UnPostop(e, op) -> let op' = match op with 
 							   Incr -> Add 
 							 | Decr -> Sub 
-						   in check_expr (Binop(e, bop, Literal 1))
+						   in check_expr (Binop(e, op', Literal 1))
+
+ 	  | UnPreop(op, e) -> (Bool, SUnPreop(op, (check_bool_expr e)))
       | Assign(var, e) as ex ->
         let lt = type_of_identifier var
         and (rt, e') = check_expr e in
@@ -131,9 +133,7 @@ let check (globals, functions) =
           in
           let args' = List.map2 check_call fd.formals args
           in (fd.rtyp, SCall(fname, args'))
-    in
-
-    let check_bool_expr e =
+    and check_bool_expr e =
       let (t, e') = check_expr e in
       match t with
       | Bool -> (t, e')

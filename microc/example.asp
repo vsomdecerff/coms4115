@@ -14,6 +14,18 @@ int main() {
   int x;
   int y;
   int i;
+  bool d;
+
+  d = not false; 
+  if (not d) 
+  {
+	print(4);
+  } 
+  else 
+  {
+	print(5);
+  }
+
   a = 18;
   b = 9;
   x = 2;
@@ -24,7 +36,7 @@ int main() {
   print(gcd(a,b));
 
   i = 0;
-  i +=4;
+  i += 4;
   if ( i == 4)
   {
 	print(4);

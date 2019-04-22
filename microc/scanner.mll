@@ -28,6 +28,7 @@ rule token = parse
 | "%="     { ASSIGNMODULO }
 | "++"	   { INCREMENT }
 | "--"     { DECREMENT }
+| "not"    { NOT }
 | "=="     { EQ }
 | "!="     { NEQ }
 | '<'      { LT }

@@ -117,6 +117,11 @@ let translate (globals, functions) =
          | A.Neq     -> L.build_icmp L.Icmp.Ne
          | A.Less    -> L.build_icmp L.Icmp.Slt
         ) e1' e2' "tmp" builder
+	  | SUnPreop(op, e) -> 
+		let e' = build_expr builder e in
+    	(match op with
+           A.Not     -> L.build_not
+        ) e' "tmp" builder
       | SCall ("print", [e]) ->
         L.build_call printf_func [| int_format_str ; (build_expr builder e) |]
           "printf" builder
