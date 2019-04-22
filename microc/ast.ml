@@ -1,6 +1,10 @@
 (* Abstract Syntax Tree and functions for printing it *)
 
-type op = Add | Sub | Mul | Div | Mod |  Equal | Neq | Less | Great | LessEqual | GreatEqual | And | Or | Incr | Decr | Not 
+type op = Add | Sub | Mul | Div | Mod |  Equal | Neq | Less | Great | LessEqual | GreatEqual | And | Or 
+
+type postop = Incr | Decr 
+
+type preop = Not 
 
 type typ = Int | Bool
 
@@ -11,8 +15,8 @@ type expr =
   | Binop of expr * op * expr
   | AssignBinop of string * op * expr
   | Assign of string * expr
-  | UnPostop of expr * op 
-  | UnPreop of op * expr
+  | UnPostop of expr * postop 
+  | UnPreop of preop * expr
   (* function call *)
   | Call of string * expr list
 
@@ -57,9 +61,13 @@ let string_of_op = function
   | GreatEqual -> ">="
   | And -> "&&"
   | Or -> "||"
-  | Incr -> "++"
+
+let string_of_postop = function
+    Incr -> "++"
   | Decr -> "--"
-  | Not -> "not"
+
+let string_of_preop = function
+    Not -> "not"
 
 let rec string_of_expr = function
     Literal(l) -> string_of_int l
@@ -70,8 +78,8 @@ let rec string_of_expr = function
     string_of_expr e1 ^ " " ^ string_of_op o ^ " " ^ string_of_expr e2
   | Assign(v, e) -> v ^ " = " ^ string_of_expr e
   | AssignBinop(v, o, e) -> v ^ " " ^ string_of_op o ^ "= " ^ string_of_expr e
-  | UnPostop(e, o) -> string_of_expr e ^ string_of_op o
-  | UnPreop(o, e) -> string_of_op o ^ " " ^ string_of_expr e
+  | UnPostop(e, o) -> string_of_expr e ^ string_of_postop o
+  | UnPreop(o, e) -> string_of_preop o ^ " " ^ string_of_expr e
   | Call(f, el) ->
       f ^ "(" ^ String.concat ", " (List.map string_of_expr el) ^ ")"
 
