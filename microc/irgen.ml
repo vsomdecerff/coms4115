@@ -182,6 +182,22 @@ let translate (globals, functions) =
         ignore(L.build_cond_br bool_val body_bb end_bb while_builder);
         L.builder_at_end context end_bb
 
+	  | SDo (predicate, body) ->
+        let while_bb = L.append_block context "while" the_function in
+        let while_builder = L.builder_at_end context while_bb in
+        let build_br_while = L.build_br while_bb in (* partial function *)
+        let bool_val = build_expr while_builder predicate in
+
+        let body_bb = L.append_block context "while_body" the_function in
+        let build_br_body = L.build_br body_bb in (* partial function *)
+        ignore (build_br_body builder);
+        add_terminal (build_stmt (L.builder_at_end context body_bb) body) build_br_while;
+
+        let end_bb = L.append_block context "while_end" the_function in
+
+        ignore(L.build_cond_br bool_val body_bb end_bb while_builder);
+        L.builder_at_end context end_bb
+
     in
     (* Build the code for each statement in the function *)
     let func_builder = build_stmt builder (SBlock fdecl.sbody) in

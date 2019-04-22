@@ -1,17 +1,25 @@
 /* The GCD algorithm in MicroC */
-int tmp (int a) {
-	while(a >= 0) {
-		print(a);
-		a--;
-	} 
-	return 0;
+int tmp2(int a) {
+	do {
+	 	print(a);
+        a--;
+	}
+	while( a >= 0)
+
+}
+
+int tmp(int a) {
+    while( a >= 0) {
+        print(a);
+        a--;
+    }
 }
 
 
 int main() {
   int a;
   a = 5;
-  a++;
-  tmp(a);
+  tmp2(a);
+ 
   return 0;
 }

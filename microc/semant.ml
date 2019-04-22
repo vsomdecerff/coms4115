@@ -171,9 +171,10 @@ let check (globals, functions) =
 
       | While(e, st) ->
         SWhile(check_bool_expr e, check_stmt st)
-
 	  | For(e1, e2, e3, Block sl) ->
 		check_stmt (Block (Expr e1 :: While(e2, Block (List.rev (Expr e3 :: List.rev sl ))) :: []))
+	  | Do(e, st) ->
+		SDo(check_bool_expr e, check_stmt st)
 
       | Return e ->
         let (t, e') = check_expr e in

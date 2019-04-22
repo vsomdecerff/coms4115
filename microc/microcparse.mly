@@ -9,7 +9,7 @@ open Ast
 %token INCREMENT DECREMENT
 %token ASSIGNPLUS ASSIGNMINUS ASSIGNTIMES ASSIGNDIVIDE ASSIGNMODULO
 %token NOT EQ NEQ LT GT LEQ GEQ AND OR
-%token IF ELSE SWITCH CASE DEFAULT WHILE FOR INT BOOL
+%token IF ELSE SWITCH CASE DEFAULT WHILE DO FOR INT BOOL
 /* return, COMMA token */
 %token RETURN COMMA
 %token <int> LITERAL
@@ -89,6 +89,7 @@ stmt:
   | CASE LPAREN expr RPAREN stmt            { Case($3, $5)   }
   | DEFAULT stmt							{ Default($2)    }
   | WHILE LPAREN expr RPAREN stmt           { While ($3, $5)  }
+  | DO stmt WHILE LPAREN expr RPAREN 		{ Do ($5, $2) }
   | FOR LPAREN expr SEMI expr SEMI expr RPAREN stmt { For($3, $5, $7, $9) } 
   /* return */
   | RETURN expr SEMI                        { Return $2      }

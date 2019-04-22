@@ -18,6 +18,7 @@ type sstmt =
   | SExpr of sexpr
   | SIf of sexpr * sstmt * sstmt
   | SWhile of sexpr * sstmt
+  | SDo of sexpr * sstmt 
   (* return *)
   | SReturn of sexpr
 
@@ -58,6 +59,7 @@ let rec string_of_sstmt = function
   | SIf(e, s1, s2) ->  "if (" ^ string_of_sexpr e ^ ")\n" ^
                        string_of_sstmt s1 ^ "else\n" ^ string_of_sstmt s2
   | SWhile(e, s) -> "while (" ^ string_of_sexpr e ^ ") " ^ string_of_sstmt s
+  | SDo(e, s) -> "do " ^ string_of_sstmt s ^ "\nwhile ( " ^ string_of_sexpr e ^ " )"
 
 let string_of_sfdecl fdecl =
   string_of_typ fdecl.srtyp ^ " " ^

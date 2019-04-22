@@ -44,6 +44,7 @@ rule token = parse
 | "case"   { CASE }
 | "default"{ DEFAULT }
 | "while"  { WHILE }
+| "do"     { DO }
 | "for"    { FOR }
 (* RETURN *)
 | "return" { RETURN }
