@@ -78,45 +78,37 @@ if_end:                                           ; preds = %else, %then
   %x4 = load i32, i32* %x
   %gcd_result = call i32 @gcd(i32 %x4, i32 %y3)
   %printf5 = call i32 (i8*, ...) @printf(i8* getelementptr inbounds ([4 x i8], [4 x i8]* @fmt.1, i32 0, i32 0), i32 %gcd_result)
-  %gcd_result6 = call i32 @gcd(i32 3, i32 15)
-  %printf7 = call i32 (i8*, ...) @printf(i8* getelementptr inbounds ([4 x i8], [4 x i8]* @fmt.1, i32 0, i32 0), i32 %gcd_result6)
-  %gcd_result8 = call i32 @gcd(i32 99, i32 121)
-  %printf9 = call i32 (i8*, ...) @printf(i8* getelementptr inbounds ([4 x i8], [4 x i8]* @fmt.1, i32 0, i32 0), i32 %gcd_result8)
-  %b = load i32, i32* @b
-  %a = load i32, i32* @a
-  %gcd_result10 = call i32 @gcd(i32 %a, i32 %b)
-  %printf11 = call i32 (i8*, ...) @printf(i8* getelementptr inbounds ([4 x i8], [4 x i8]* @fmt.1, i32 0, i32 0), i32 %gcd_result10)
   store i32 0, i32* %i
-  %i12 = load i32, i32* %i
-  %tmp13 = add i32 %i12, 4
-  store i32 %tmp13, i32* %i
-  %i14 = load i32, i32* %i
-  %tmp15 = icmp sle i32 %i14, 4
-  br i1 %tmp15, label %then16, label %else18
+  %i6 = load i32, i32* %i
+  %tmp7 = add i32 %i6, 4
+  store i32 %tmp7, i32* %i
+  %i8 = load i32, i32* %i
+  %tmp9 = icmp sle i32 %i8, 4
+  br i1 %tmp9, label %then10, label %else12
 
-then16:                                           ; preds = %if_end
-  %printf17 = call i32 (i8*, ...) @printf(i8* getelementptr inbounds ([4 x i8], [4 x i8]* @fmt.1, i32 0, i32 0), i32 4)
-  br label %if_end20
+then10:                                           ; preds = %if_end
+  %printf11 = call i32 (i8*, ...) @printf(i8* getelementptr inbounds ([4 x i8], [4 x i8]* @fmt.1, i32 0, i32 0), i32 4)
+  br label %if_end14
 
-else18:                                           ; preds = %if_end
-  %printf19 = call i32 (i8*, ...) @printf(i8* getelementptr inbounds ([4 x i8], [4 x i8]* @fmt.1, i32 0, i32 0), i32 5)
-  br label %if_end20
+else12:                                           ; preds = %if_end
+  %printf13 = call i32 (i8*, ...) @printf(i8* getelementptr inbounds ([4 x i8], [4 x i8]* @fmt.1, i32 0, i32 0), i32 5)
+  br label %if_end14
 
-if_end20:                                         ; preds = %else18, %then16
+if_end14:                                         ; preds = %else12, %then10
   store i32 0, i32* %i
   br label %while
 
-while:                                            ; preds = %while_body, %if_end20
-  %i21 = load i32, i32* %i
-  %tmp22 = icmp slt i32 %i21, 4
-  br i1 %tmp22, label %while_body, label %while_end
+while:                                            ; preds = %while_body, %if_end14
+  %i15 = load i32, i32* %i
+  %tmp16 = icmp slt i32 %i15, 4
+  br i1 %tmp16, label %while_body, label %while_end
 
 while_body:                                       ; preds = %while
-  %i23 = load i32, i32* %i
-  %printf24 = call i32 (i8*, ...) @printf(i8* getelementptr inbounds ([4 x i8], [4 x i8]* @fmt.1, i32 0, i32 0), i32 %i23)
-  %i25 = load i32, i32* %i
-  %tmp26 = add i32 %i25, 1
-  store i32 %tmp26, i32* %i
+  %i17 = load i32, i32* %i
+  %printf18 = call i32 (i8*, ...) @printf(i8* getelementptr inbounds ([4 x i8], [4 x i8]* @fmt.1, i32 0, i32 0), i32 %i17)
+  %i19 = load i32, i32* %i
+  %tmp20 = add i32 %i19, 1
+  store i32 %tmp20, i32* %i
   br label %while
 
 while_end:                                        ; preds = %while

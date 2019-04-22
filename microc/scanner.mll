@@ -8,6 +8,7 @@ let letter = ['a'-'z' 'A'-'Z']
 rule token = parse
   [' ' '\t' '\r' '\n'] { token lexbuf } (* Whitespace *)
 | "/*"     { comment lexbuf }           (* Comments *)
+| "//" 	   { single_comment lexbuf }
 | '('      { LPAREN }
 | ')'      { RPAREN }
 | '{'      { LBRACE }
@@ -58,3 +59,7 @@ rule token = parse
 and comment = parse
   "*/" { token lexbuf }
 | _    { comment lexbuf }
+
+and single_comment = parse
+  "\n" { token lexbuf }
+| _    { single_comment lexbuf }
