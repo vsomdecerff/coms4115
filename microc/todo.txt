@@ -1,0 +1,14 @@
+nested if
+elif 
+
+float
+strings
+none
+lists
+
+continue
+break (return?)
+
+negation
+
+cast ?
