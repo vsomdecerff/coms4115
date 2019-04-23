@@ -91,7 +91,10 @@ let check (globals, functions) =
 							 | Decr -> Sub 
 						   in check_expr (Assign(var, (Binop(Id var, op', Literal(1)))))
 
- 	  | UnPreop(op, e) -> (Bool, SUnPreop(op, (check_bool_expr e)))
+ 	  | UnPreop(op, e) -> let sexpr' = match op with
+							Not -> (Bool, SUnPreop(op, (check_bool_expr e)))
+						  | Neg -> (Int, SUnPreop(op, (check_expr e)))
+						in sexpr'
       | Assign(var, e) as ex ->
         let lt = type_of_identifier var
         and (rt, e') = check_expr e in

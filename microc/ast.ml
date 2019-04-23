@@ -4,7 +4,7 @@ type op = Add | Sub | Mul | Div | Mod |  Equal | Neq | Less | Great | LessEqual 
 
 type postop = Incr | Decr 
 
-type preop = Not 
+type preop = Not | Neg
 
 type typ = Int | Bool
 
@@ -69,6 +69,7 @@ let string_of_postop = function
 
 let string_of_preop = function
     Not -> "not"
+  | Neg -> "-"
 
 let rec string_of_expr = function
     Literal(l) -> string_of_int l

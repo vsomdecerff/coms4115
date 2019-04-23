@@ -2,62 +2,29 @@
 source_filename = "MicroC"
 
 @fmt = private unnamed_addr constant [4 x i8] c"%d\0A\00"
-@fmt.1 = private unnamed_addr constant [4 x i8] c"%d\0A\00"
-@fmt.2 = private unnamed_addr constant [4 x i8] c"%d\0A\00"
 
 declare i32 @printf(i8*, ...)
-
-define i32 @tmp2(i32 %a) {
-entry:
-  %a1 = alloca i32
-  store i32 %a, i32* %a1
-  br label %while_body
-
-while:                                            ; preds = %while_body
-  %a2 = load i32, i32* %a1
-  %tmp = icmp sge i32 %a2, 0
-  br i1 %tmp, label %while_body, label %while_end
-
-while_body:                                       ; preds = %while, %entry
-  %a3 = load i32, i32* %a1
-  %printf = call i32 (i8*, ...) @printf(i8* getelementptr inbounds ([4 x i8], [4 x i8]* @fmt, i32 0, i32 0), i32 %a3)
-  %a4 = load i32, i32* %a1
-  %tmp5 = sub i32 %a4, 1
-  store i32 %tmp5, i32* %a1
-  br label %while
-
-while_end:                                        ; preds = %while
-  ret i32 0
-}
-
-define i32 @tmp(i32 %a) {
-entry:
-  %a1 = alloca i32
-  store i32 %a, i32* %a1
-  br label %while
-
-while:                                            ; preds = %while_body, %entry
-  %a2 = load i32, i32* %a1
-  %tmp = icmp sge i32 %a2, 0
-  br i1 %tmp, label %while_body, label %while_end
-
-while_body:                                       ; preds = %while
-  %a3 = load i32, i32* %a1
-  %printf = call i32 (i8*, ...) @printf(i8* getelementptr inbounds ([4 x i8], [4 x i8]* @fmt.1, i32 0, i32 0), i32 %a3)
-  %a4 = load i32, i32* %a1
-  %tmp5 = sub i32 %a4, 1
-  store i32 %tmp5, i32* %a1
-  br label %while
-
-while_end:                                        ; preds = %while
-  ret i32 0
-}
 
 define i32 @main() {
 entry:
   %a = alloca i32
-  store i32 5, i32* %a
+  %b = alloca i32
+  store i32 -2, i32* %a
+  store i32 5, i32* %b
   %a1 = load i32, i32* %a
-  %tmp2_result = call i32 @tmp2(i32 %a1)
+  %tmp = icmp sle i32 %a1, 0
+  br i1 %tmp, label %then, label %else
+
+merge:                                            ; preds = %else, %then
   ret i32 0
+
+then:                                             ; preds = %entry
+  %a2 = load i32, i32* %a
+  %printf = call i32 (i8*, ...) @printf(i8* getelementptr inbounds ([4 x i8], [4 x i8]* @fmt, i32 0, i32 0), i32 %a2)
+  br label %merge
+
+else:                                             ; preds = %entry
+  %b3 = load i32, i32* %b
+  %printf4 = call i32 (i8*, ...) @printf(i8* getelementptr inbounds ([4 x i8], [4 x i8]* @fmt, i32 0, i32 0), i32 %b3)
+  br label %merge
 }
