@@ -12,6 +12,7 @@ and sx =
   | SAssign of string * sexpr
   (* call *)
   | SCall of string * sexpr list
+  | SList of sexpr list
 
 type sstmt =
     SBlock of sstmt list
@@ -47,6 +48,7 @@ let rec string_of_sexpr (t, e) =
 	  | SUnPreop(o, e) ->
 		string_of_preop o ^ " " ^ string_of_sexpr e 
       | SAssign(v, e) -> v ^ " = " ^ string_of_sexpr e
+      | SList(el) -> "[ " ^ String.concat ", " (List.map string_of_sexpr el) ^ " ]"
       | SCall(f, el) ->
           f ^ "(" ^ String.concat ", " (List.map string_of_sexpr el) ^ ")"
     ) ^ ")"

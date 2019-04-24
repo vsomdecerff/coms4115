@@ -19,7 +19,8 @@ type expr =
   | UnPreop of preop * expr
   (* function call *)
   | Call of string * expr list
-
+  | List of expr list
+	
 type stmt =
     Block of stmt list
   | Expr of expr
@@ -84,6 +85,7 @@ let rec string_of_expr = function
   | UnPreop(o, e) -> string_of_preop o ^ " " ^ string_of_expr e
   | Call(f, el) ->
       f ^ "(" ^ String.concat ", " (List.map string_of_expr el) ^ ")"
+  | List(el) -> "[ " ^ String.concat ", " (List.map string_of_expr el) ^ " ]"
 
 let rec string_of_stmt = function
     Block(stmts) ->
