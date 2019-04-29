@@ -2,16 +2,13 @@
 
 int main() {
   int a;
-  int b;
+  bool b;
+  bool c;
 
-  a = -2;
-  b = 5;
-  if ( a <= 0 ) {
-	print(a);
-  }
-  else {
-	print(b);
-  }
- 
+  b = true;
+
+  a = [1, 2, 3];
+  c = [b, false]; 
+
   return 0;
 }

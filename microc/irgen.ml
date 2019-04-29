@@ -96,7 +96,7 @@ let translate (globals, functions) =
     in
 
     (* Construct code for an expression; return its value *)
-    let rec build_expr builder ((_, e) : sexpr) = match e with
+    let rec build_expr builder ((t_, e) : sexpr) = match e with
         SLiteral i  -> L.const_int i32_t i
       | SBoolLit b  -> L.const_int i1_t (if b then 1 else 0)
       | SId s       -> L.build_load (lookup s) s builder
@@ -126,6 +126,7 @@ let translate (globals, functions) =
            A.Not     -> L.build_not
          | A.Neg     -> L.build_neg
         ) e' "tmp" builder
+	  | SList(el) -> L.const_array (ltype_of_typ t_) (Array.of_list  (List.map (build_expr builder) el ))
       | SCall ("print", [e]) ->
         L.build_call printf_func [| int_format_str ; (build_expr builder e) |]
           "printf" builder
