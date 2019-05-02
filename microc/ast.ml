@@ -6,7 +6,7 @@ type postop = Incr | Decr
 
 type preop = Not | Neg
 
-type typ = Int | Bool
+type typ = Int | Bool | Ptr of typ
 
 type expr =
     Literal of int
@@ -20,6 +20,7 @@ type expr =
   (* function call *)
   | Call of string * expr list
   | List of expr list
+  | ListAccess of expr * expr
 	
 type stmt =
     Block of stmt list
@@ -86,6 +87,7 @@ let rec string_of_expr = function
   | Call(f, el) ->
       f ^ "(" ^ String.concat ", " (List.map string_of_expr el) ^ ")"
   | List(el) -> "[ " ^ String.concat ", " (List.map string_of_expr el) ^ " ]"
+  | ListAccess(l, i) -> string_of_expr l ^ " @ " ^ string_of_expr i 
 
 let rec string_of_stmt = function
     Block(stmts) ->
@@ -102,9 +104,10 @@ let rec string_of_stmt = function
   | For(e1, e2, e3, s) -> "for (" ^ string_of_expr e1 ^ "; " ^ string_of_expr e2 ^ "; " ^ string_of_expr e3 ^ ") " ^ 
 						   string_of_stmt s
 
-let string_of_typ = function
+let rec string_of_typ = function
     Int -> "int"
   | Bool -> "bool"
+  | Ptr(t) -> string_of_typ t ^ " *"
 
 let string_of_vdecl (t, id) = string_of_typ t ^ " " ^ id ^ ";\n"
 

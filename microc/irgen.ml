@@ -32,9 +32,10 @@ let translate (globals, functions) =
   and i1_t       = L.i1_type     context in
 
   (* Return the LLVM type for a MicroC type *)
-  let ltype_of_typ = function
+  let rec ltype_of_typ = function
       A.Int   -> i32_t
     | A.Bool  -> i1_t
+    | A.Ptr(t)  -> L.pointer_type (ltype_of_typ t)
   in
 
   (* Create a map of global variables after creating each *)
@@ -101,7 +102,11 @@ let translate (globals, functions) =
       | SBoolLit b  -> L.const_int i1_t (if b then 1 else 0)
       | SId s       -> L.build_load (lookup s) s builder
       | SAssign (s, e) -> let e' = build_expr builder e in
-        ignore(L.build_store e' (lookup s) builder); e'
+			ignore ((match t_ with 
+				A.Int -> L.build_store
+				| A.Bool -> L.build_store 
+				| A.Ptr(_) -> L.build_store 
+			) e' (lookup s)  builder); e'
       | SBinop (e1, op, e2) ->
         let e1' = build_expr builder e1
         and e2' = build_expr builder e2 in
@@ -126,8 +131,28 @@ let translate (globals, functions) =
            A.Not     -> L.build_not
          | A.Neg     -> L.build_neg
         ) e' "tmp" builder
-	  | SList(el) -> L.const_array (ltype_of_typ t_) (Array.of_list  (List.map (build_expr builder) el ))
-      | SCall ("print", [e]) ->
+	  | SList(el) -> 
+			let sizeva = (List.length el) in
+			let size = L.const_int i32_t sizeva in
+			let ty = ltype_of_typ t_ in
+			let arr = L.build_array_malloc ty size "init1" builder in
+			let arr = L.build_pointercast arr ty "init2" builder in
+			let _ = L.build_bitcast size ty "init3" builder in
+			let values = List.map (build_expr builder) el in
+			let buildf i v =
+			(let arr_ptr =
+			L.build_gep arr [| (L.const_int i32_t (i)) |] "init4" builder in
+			ignore(L.build_store v arr_ptr builder);)
+		in
+		List.iteri buildf values; arr
+		(*L.const_array (ltype_of_typ t_) (Array.of_list  (List.map (build_expr builder) el ))*)
+	  | SListAccess(l, i) ->
+			let idx = build_expr builder i  in
+			let idx = L.build_add idx (L.const_int i32_t 0) "access1" builder in
+			let arr = build_expr builder l in
+			let res = L.build_gep arr [| idx |] "access2" builder in
+		L.build_load res "access3" builder
+	  | SCall ("print", [e]) ->
         L.build_call printf_func [| int_format_str ; (build_expr builder e) |]
           "printf" builder
       | SCall (f, args) ->

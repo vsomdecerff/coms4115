@@ -8,8 +8,8 @@ open Ast
 %token PLUS MINUS TIMES DIVIDE MODULO ASSIGN 
 %token INCREMENT DECREMENT
 %token ASSIGNPLUS ASSIGNMINUS ASSIGNTIMES ASSIGNDIVIDE ASSIGNMODULO
-%token NEG NOT EQ NEQ LT GT LEQ GEQ AND OR
-%token IF ELSE SWITCH CASE DEFAULT WHILE DO FOR INT BOOL
+%token NEG NOT EQ NEQ LT GT LEQ GEQ AND OR AT
+%token IF ELSE SWITCH CASE DEFAULT WHILE DO FOR INT BOOL INT_ BOOL_
 /* return, COMMA token */
 %token RETURN COMMA
 %token <int> LITERAL
@@ -25,6 +25,7 @@ open Ast
 %left AND
 %left EQ NEQ 
 %left LT GT LEQ GEQ
+%left AT
 %left PLUS MINUS
 %left INCREMENT DECREMENT
 %left TIMES DIVIDE MODULO
@@ -52,6 +53,8 @@ vdecl:
 typ:
     INT   { Int   }
   | BOOL  { Bool  }
+  | INT_  { Ptr(Int) }
+  | BOOL_ { Ptr(Bool)}
 
 /* fdecl */
 fdecl:
@@ -98,7 +101,8 @@ expr:
     LITERAL          { Literal($1)            }
   | BLIT             { BoolLit($1)            }
   | ID               { Id($1)                 }
-  | LBRACK args_opt RBRACK { List($2)   }
+  | LBRACK args_opt RBRACK 		{ List($2)   }
+  | expr AT expr    { ListAccess($1, $3) }
   | expr PLUS   expr { Binop($1, Add,   $3)   }
   | expr MINUS  expr { Binop($1, Sub,   $3)   }
   | expr TIMES  expr { Binop($1, Mul, $3) }

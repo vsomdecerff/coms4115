@@ -15,6 +15,7 @@ rule token = parse
 | '}'      { RBRACE }
 | '['	   { LBRACK }
 | ']'	   { RBRACK }
+| '@'	   { AT }
 | ';'      { SEMI }
 (* COMMA *)
 | ','      { COMMA }
@@ -51,7 +52,9 @@ rule token = parse
 (* RETURN *)
 | "return" { RETURN }
 | "int"    { INT }
+| "int*"   { INT_ }
 | "bool"   { BOOL }
+| "bool*"  { BOOL_ }
 | "true"   { BLIT(true)  }
 | "false"  { BLIT(false) }
 | digit+ as lem  { LITERAL(int_of_string lem) }
