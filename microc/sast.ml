@@ -9,7 +9,7 @@ and sx =
   | SId of string
   | SBinop of sexpr * op * sexpr
   | SUnPreop of preop * sexpr 
-  | SAssign of string * sexpr
+  | SAssign of sexpr * sexpr
   (* call *)
   | SCall of string * sexpr list
   | SList of sexpr list
@@ -48,9 +48,9 @@ let rec string_of_sexpr (t, e) =
         string_of_sexpr e1 ^ " " ^ string_of_op o ^ " " ^ string_of_sexpr e2
 	  | SUnPreop(o, e) ->
 		string_of_preop o ^ " " ^ string_of_sexpr e 
-      | SAssign(v, e) -> v ^ " = " ^ string_of_sexpr e
-      | SList(el) -> "[ " ^ String.concat ", " (List.map string_of_sexpr el) ^ " ]"
-      | SListAccess(l, i) -> string_of_sexpr l ^ " @ " ^ string_of_sexpr i
+      | SAssign(v, e) -> string_of_sexpr v ^ " = " ^ string_of_sexpr e
+      | SList(el) ->  "[ " ^ String.concat ", " (List.map string_of_sexpr el) ^ " ]"
+      | SListAccess(l, i) ->  string_of_sexpr l ^ " @ " ^ string_of_sexpr i
       | SCall(f, el) ->
           f ^ "(" ^ String.concat ", " (List.map string_of_sexpr el) ^ ")"
     ) ^ ")"

@@ -85,24 +85,38 @@ let check (globals, functions) =
         Literal l -> (Int, SLiteral l)
       | BoolLit l -> (Bool, SBoolLit l)
       | Id var -> (type_of_identifier var, SId var)
-	  | AssignBinop(var, op, e) -> check_expr (Assign(var, Binop(Id var, op, e)))
+	  | AssignBinop(var, op, e) -> check_expr (Assign(var, Binop(var, op, e)))
 	  | UnPostop(var, op) -> let op' = match op with 
 							   Incr -> Add 
 							 | Decr -> Sub 
-						   in check_expr (Assign(var, (Binop(Id var, op', Literal(1)))))
+						   in check_expr (Assign(var, (Binop(var, op', Literal(1)))))
 
  	  | UnPreop(op, e) -> let sexpr' = match op with
 							Not -> (Bool, SUnPreop(op, (check_bool_expr e)))
 						  | Neg -> (Int, SUnPreop(op, (check_expr e)))
 						in sexpr'
-      | Assign(var, e) as ex ->
+      | Assign(Id(var) , e) as ex ->
         let lt = type_of_identifier var
         and (rt, e') = check_expr e in
         let err = "illegal assignment " ^ string_of_typ lt ^ " = " ^
                   string_of_typ rt ^ " in " ^ string_of_expr ex
         in
-        (check_assign lt rt err, SAssign(var, (rt, e')))
+        (check_assign lt rt err, SAssign((lt, SId(var)), (rt, e')))
 
+	  | Assign(ListAccess(l, i), e) as ex ->
+			let get_first_type = function
+                  [] -> raise (Failure "Cannot assign value to empty list")
+            | hd :: tl -> fst (check_expr hd)
+			in 
+			let (rt, re') = check_expr e in
+			let (lt, le') = (check_expr (ListAccess(l, i))) in
+			let err = "illegal assignment " ^ string_of_typ lt ^ " = " ^
+                  string_of_typ rt ^ " in " ^ string_of_expr ex
+			in 
+			((check_assign lt rt err) , SAssign( (lt, le') , (rt, re')))
+
+      | Assign(ListAccess(ll, i), e)  ->
+		raise (Failure "HELLP")
       | Binop(e1, op, e2) as e ->
         let (t1, e1') = check_expr e1
         and (t2, e2') = check_expr e2 in

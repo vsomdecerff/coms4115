@@ -13,9 +13,9 @@ type expr =
   | BoolLit of bool
   | Id of string
   | Binop of expr * op * expr
-  | AssignBinop of string * op * expr
-  | Assign of string * expr
-  | UnPostop of string * postop 
+  | AssignBinop of expr * op * expr
+  | Assign of expr * expr
+  | UnPostop of expr * postop 
   | UnPreop of preop * expr
   (* function call *)
   | Call of string * expr list
@@ -80,9 +80,9 @@ let rec string_of_expr = function
   | Id(s) -> s
   | Binop(e1, o, e2) ->
     string_of_expr e1 ^ " " ^ string_of_op o ^ " " ^ string_of_expr e2
-  | Assign(v, e) -> v ^ " = " ^ string_of_expr e
-  | AssignBinop(v, o, e) -> v ^ " " ^ string_of_op o ^ "= " ^ string_of_expr e
-  | UnPostop(v, o) -> v ^ string_of_postop o
+  | Assign(v, e) -> string_of_expr v  ^ " = " ^ string_of_expr e
+  | AssignBinop(v, o, e) -> string_of_expr v ^ " " ^ string_of_op o ^ "= " ^ string_of_expr e
+  | UnPostop(v, o) -> string_of_expr v ^ string_of_postop o
   | UnPreop(o, e) -> string_of_preop o ^ " " ^ string_of_expr e
   | Call(f, el) ->
       f ^ "(" ^ String.concat ", " (List.map string_of_expr el) ^ ")"

@@ -102,14 +102,14 @@ expr:
   | BLIT             { BoolLit($1)            }
   | ID               { Id($1)                 }
   | LBRACK args_opt RBRACK 		{ List($2)   }
-  | expr AT expr    { ListAccess($1, $3) }
+  | expr AT expr    			{ ListAccess($1, $3) }
   | expr PLUS   expr { Binop($1, Add,   $3)   }
   | expr MINUS  expr { Binop($1, Sub,   $3)   }
   | expr TIMES  expr { Binop($1, Mul, $3) }
   | expr DIVIDE expr { Binop($1, Div, $3) }
   | expr MODULO expr { Binop($1, Mod, $3) }
-  | ID INCREMENT   { UnPostop($1, Incr) }
-  | ID DECREMENT   { UnPostop($1, Decr) }
+  | expr INCREMENT   { UnPostop($1, Incr) }
+  | expr DECREMENT   { UnPostop($1, Decr) }
   | MINUS expr %prec NEG     { UnPreop(Neg, $2) }
   | NOT expr %prec NOT 		 { UnPreop(Not, $2)   }
   | expr EQ     expr { Binop($1, Equal, $3)   }
@@ -120,12 +120,12 @@ expr:
   | expr GEQ    expr { Binop($1, GreatEqual,  $3)   }
   | expr AND    expr { Binop($1, And,   $3)   }
   | expr OR     expr { Binop($1, Or,    $3)   }
-  | ID ASSIGN expr   { Assign($1, $3)         }
-  | ID ASSIGNPLUS expr { AssignBinop($1, Add, $3) }
-  | ID ASSIGNMINUS expr { AssignBinop($1, Sub, $3) }
-  | ID ASSIGNTIMES expr { AssignBinop($1, Mul, $3) }
-  | ID ASSIGNDIVIDE expr { AssignBinop($1, Div, $3) }
-  | ID ASSIGNMODULO expr { AssignBinop($1, Mod, $3) }
+  | expr ASSIGN expr   { Assign($1, $3)         }
+  | expr ASSIGNPLUS expr { AssignBinop($1, Add, $3) }
+  | expr ASSIGNMINUS expr { AssignBinop($1, Sub, $3) }
+  | expr ASSIGNTIMES expr { AssignBinop($1, Mul, $3) }
+  | expr ASSIGNDIVIDE expr { AssignBinop($1, Div, $3) }
+  | expr ASSIGNMODULO expr { AssignBinop($1, Mod, $3) }
   | LPAREN expr RPAREN { $2                   }
   /* call */
   | ID LPAREN args_opt RPAREN { Call ($1, $3)  }

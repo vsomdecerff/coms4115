@@ -101,13 +101,20 @@ let translate (globals, functions) =
         SLiteral i  -> L.const_int i32_t i
       | SBoolLit b  -> L.const_int i1_t (if b then 1 else 0)
       | SId s       -> L.build_load (lookup s) s builder
-      | SAssign (s, e) -> let e' = build_expr builder e in
+      | SAssign ( (lt, SId(s)), e) -> let e' = build_expr builder e in
 			ignore ((match t_ with 
 				A.Int -> L.build_store
 				| A.Bool -> L.build_store 
 				| A.Ptr(_) -> L.build_store 
 			) e' (lookup s)  builder); e'
-      | SBinop (e1, op, e2) ->
+	  | SAssign ( (lt, SListAccess(l, i)), e) -> let e' = build_expr builder e in
+		    let idx = build_expr builder i  in
+            let idx = L.build_add idx (L.const_int i32_t 0) "access1" builder in
+            let arr = build_expr builder l in
+            let res = L.build_gep arr [| idx |] "access2" builder in
+		ignore (L.build_store e' res builder); e'
+
+	  | SBinop (e1, op, e2) ->
         let e1' = build_expr builder e1
         and e2' = build_expr builder e2 in
         (match op with
