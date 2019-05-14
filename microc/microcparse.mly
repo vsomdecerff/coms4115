@@ -9,10 +9,11 @@ open Ast
 %token INCREMENT DECREMENT
 %token ASSIGNPLUS ASSIGNMINUS ASSIGNTIMES ASSIGNDIVIDE ASSIGNMODULO
 %token NEG NOT EQ NEQ LT GT LEQ GEQ AND OR AT
-%token IF ELSE SWITCH CASE DEFAULT WHILE DO FOR INT BOOL INT_ BOOL_
+%token IF ELSE SWITCH CASE DEFAULT WHILE DO FOR INT BOOL FLOAT INT_ BOOL_ FLOAT_
 /* return, COMMA token */
 %token RETURN COMMA
-%token <int> LITERAL
+%token <int> ILIT
+%token <float> FLIT
 %token <bool> BLIT
 %token <string> ID
 %token EOF
@@ -51,10 +52,12 @@ vdecl:
   typ ID { ($1, $2) }
 
 typ:
-    INT   { Int   }
-  | BOOL  { Bool  }
-  | INT_  { Ptr(Int) }
-  | BOOL_ { Ptr(Bool)}
+    INT    { Int   }
+  | BOOL   { Bool  }
+  | FLOAT  { Float }
+  | INT_   { Ptr(Int)   }
+  | BOOL_  { Ptr(Bool)  }
+  | FLOAT_ { Ptr(Float) }
 
 /* fdecl */
 fdecl:
@@ -98,7 +101,8 @@ stmt:
   | RETURN expr SEMI                        { Return $2      }
 
 expr:
-    LITERAL          { Literal($1)            }
+  | ILIT   		     { IntLit($1)             }
+  | FLIT			 { FloatLit($1)			  }
   | BLIT             { BoolLit($1)            }
   | ID               { Id($1)                 }
   | LBRACK args_opt RBRACK 		{ List($2)   }

@@ -6,11 +6,12 @@ type postop = Incr | Decr
 
 type preop = Not | Neg
 
-type typ = Int | Bool | Ptr of typ
+type typ = Int | Bool | Float | Ptr of typ
 
 type expr =
-    Literal of int
+    IntLit of int
   | BoolLit of bool
+  | FloatLit of float
   | Id of string
   | Binop of expr * op * expr
   | AssignBinop of expr * op * expr
@@ -74,7 +75,8 @@ let string_of_preop = function
   | Neg -> "-"
 
 let rec string_of_expr = function
-    Literal(l) -> string_of_int l
+    IntLit(l) -> string_of_int l
+  | FloatLit(l) -> string_of_float l
   | BoolLit(true) -> "true"
   | BoolLit(false) -> "false"
   | Id(s) -> s
@@ -107,6 +109,7 @@ let rec string_of_stmt = function
 let rec string_of_typ = function
     Int -> "int"
   | Bool -> "bool"
+  | Float -> "float"
   | Ptr(t) -> string_of_typ t ^ " *"
 
 let string_of_vdecl (t, id) = string_of_typ t ^ " " ^ id ^ ";\n"

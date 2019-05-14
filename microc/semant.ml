@@ -27,36 +27,28 @@ let check (globals, functions) =
 
   (* Collect function declarations for built-in functions: no bodies *)
   let built_in_decls =
-    StringMap.add "print" {
-      rtyp = Int;
-      fname = "print";
-      formals = [(Int, "x")];
-      locals = []; body = [] } StringMap.empty
+    StringMap.add "printfloat_" {
+	rtyp = Float;
+    fname = "print";
+    formals = [(Float, "x")];
+    locals = []; body = [] }  
+		(StringMap.add "printint_" {
+     	rtyp = Int;
+     	fname = "print";
+      	formals = [(Int, "x")];
+      	locals = []; body = [] } StringMap.empty)
   in
-
-  (* Add function name to symbol table *)
-  let add_func map fd =
-    let built_in_err = "function " ^ fd.fname ^ " may not be defined"
-    and dup_err = "duplicate function " ^ fd.fname
-    and make_err er = raise (Failure er)
-    and n = fd.fname (* Name of the function *)
-    in match fd with (* No duplicate functions or redefinitions of built-ins *)
-      _ when StringMap.mem n built_in_decls -> make_err built_in_err
-    | _ when StringMap.mem n map -> make_err dup_err
-    | _ ->  StringMap.add n fd map
+  let rec get_built_types = function
+    [] -> "_"
+   | hd::tl -> (string_of_typ (fst hd)) ^ get_built_types tl
   in
-
+  let rec add_built_func map fd =
+	StringMap.add (fd.fname ^ (get_built_types fd.formals)) fd map
+  in
+  let function_decls = 
   (* Collect all function names into one symbol table *)
-  let function_decls = List.fold_left add_func built_in_decls functions
+  	List.fold_left add_built_func built_in_decls functions
   in
-
-  (* Return a function from our symbol table *)
-  let find_func s =
-    try StringMap.find s function_decls
-    with Not_found -> raise (Failure ("unrecognized function " ^ s))
-  in
-
-  let _ = find_func "main" in (* Ensure "main" is defined *)
 
   let check_func func =
     (* Make sure no formals or locals are void or duplicates *)
@@ -80,16 +72,33 @@ let check (globals, functions) =
       with Not_found -> raise (Failure ("undeclared identifier " ^ s))
     in
 
+	let rec add_func map fd =
+    	let built_in_err = "function " ^ fd.fname ^ " may not be defined"
+    	and dup_err = "duplicate function " ^ fd.fname
+    	and make_err er = raise (Failure er)
+    	and n = fd.fname (* Name of the function *)
+    	(* No duplicate functions or redefinitions of built-ins *)
+    	in
+    	if StringMap.mem n built_in_decls then make_err built_in_err
+    	else
+        	if StringMap.mem (n ^ (get_bind_types fd.formals)) map then
+            	let mfd = StringMap.find (n ^ (get_bind_types fd.formals)) map in
+            	if mfd.fname = n then make_err dup_err
+            	else StringMap.add (n ^ (get_bind_types fd.formals)) fd map
+    	else  StringMap.add (n ^ (get_bind_types fd.formals))  fd map
+  	and
+
     (* Return a semantically-checked expression, i.e., with a type *)
-    let rec check_expr = function
-        Literal l -> (Int, SLiteral l)
+    check_expr = function
+        IntLit l -> (Int, SIntLit l)
+	  | FloatLit l -> (Float, SFloatLit l)
       | BoolLit l -> (Bool, SBoolLit l)
       | Id var -> (type_of_identifier var, SId var)
 	  | AssignBinop(var, op, e) -> check_expr (Assign(var, Binop(var, op, e)))
 	  | UnPostop(var, op) -> let op' = match op with 
 							   Incr -> Add 
 							 | Decr -> Sub 
-						   in check_expr (Assign(var, (Binop(var, op', Literal(1)))))
+						   in check_expr (Assign(var, (Binop(var, op', IntLit(1)))))
 
  	  | UnPreop(op, e) -> let sexpr' = match op with
 							Not -> (Bool, SUnPreop(op, (check_bool_expr e)))
@@ -137,7 +146,8 @@ let check (globals, functions) =
           (t, SBinop((t1, e1'), op, (t2, e2')))
         else raise (Failure err)
       | Call(fname, args) as call ->
-        let fd = find_func fname in
+		let var_list = get_ast_types args in
+        let fd = (find_func (fname ^ var_list)) in
         let param_length = List.length fd.formals in
         if List.length args != param_length then
           raise (Failure ("expecting " ^ string_of_int param_length ^
@@ -173,14 +183,32 @@ let check (globals, functions) =
 			let sl = check_expr l in
 			let ty = get_el_type (fst sl) in
 		 (ty , SListAccess(sl , (check_expr i)))
-					
-		
-   and check_bool_expr e =
+
+   and 
+	check_bool_expr e =
       let (t, e') = check_expr e in
       match t with
       | Bool -> (t, e')
       |  _ -> raise (Failure ("expected Boolean expression in " ^ string_of_expr e))
-    in
+   and
+	get_bind_types = function
+    [] -> "_"
+        | hd::tl -> (string_of_typ (fst hd)) ^ get_bind_types tl
+  and
+	get_ast_types = function
+    [] -> "_"
+        | hd::tl -> let (et, e') = check_expr hd
+          in (string_of_typ et) ^ get_ast_types tl
+  and 
+  (* Return a function from our symbol table *)
+  find_func s =
+    let rec print_users = function
+    	[] -> "" 
+		| hd::tl  -> (fst hd) ^ "\n" ^ print_users tl
+	in 
+	try StringMap.find s function_decls
+    with Not_found -> raise (Failure ("unrecognized function " ^ s ^ " " ^ string_of_int (StringMap.cardinal function_decls) ^ print_users (StringMap.bindings function_decls)))
+  in
 
 	let rec check_nested_case_list e sl =
       match sl with
