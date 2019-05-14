@@ -124,8 +124,6 @@ let check (globals, functions) =
 			in 
 			((check_assign lt rt err) , SAssign( (lt, le') , (rt, re')))
 
-      | Assign(ListAccess(ll, i), e)  ->
-		raise (Failure "HELLP")
       | Binop(e1, op, e2) as e ->
         let (t1, e1') = check_expr e1
         and (t2, e2') = check_expr e2 in
@@ -137,14 +135,21 @@ let check (globals, functions) =
         if t1 = t2 then
           (* Determine expression type based on operator and operand types *)
           let t = match op with
-              Add | Sub | Mul | Div | Mod when t1 = Int -> Int
-            | Equal | Neq -> Bool
-            | Less | Great | LessEqual | GreatEqual  when t1 = Int -> Bool
+              Add | Sub | Mul | Div | Mod when t1 != Bool -> t1
+            | Equal | Neq when t1 != Float -> Bool
+            | Less | Great | LessEqual | GreatEqual  when t1 != Bool -> Bool
             | And | Or when t1 = Bool -> Bool
             | _ -> raise (Failure err)
           in
           (t, SBinop((t1, e1'), op, (t2, e2')))
-        else raise (Failure err)
+        else if t1 = Float || t2 = Float then
+			let t = match op with 
+				Add | Sub | Mul | Div | Mod when t1 = Float || t2 = Float -> Float
+			  | Less | Great when t1 != Bool && t2 != Bool  -> Bool
+              | _ -> raise (Failure err)
+		  in
+		  (t, SBinop((t1, e1'), op, (t2, e2')))
+		else raise (Failure err)
       | Call(fname, args) as call ->
 		let var_list = get_ast_types args in
         let fd = (find_func (fname ^ var_list)) in
