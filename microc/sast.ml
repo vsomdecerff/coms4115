@@ -7,6 +7,7 @@ and sx =
     SIntLit of int
   | SFloatLit of float
   | SBoolLit of bool
+  | SStringLit of string
   | SId of string
   | SBinop of sexpr * op * sexpr
   | SUnPreop of preop * sexpr 
@@ -46,6 +47,7 @@ let rec string_of_sexpr (t, e) =
       | SFloatLit(l) -> string_of_float l
       | SBoolLit(true) -> "true"
       | SBoolLit(false) -> "false"
+      | SStringLit(l) -> l
       | SId(s) -> s
       | SBinop(e1, o, e2) ->
         string_of_sexpr e1 ^ " " ^ string_of_op o ^ " " ^ string_of_sexpr e2
