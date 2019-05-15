@@ -39,8 +39,9 @@ rule token = parse
 | '>' 	   { GT }
 | ">=" 	   { GEQ }
 | "<="	   { LEQ }
-| "&&"     { AND }
-| "||"     { OR }
+| "^"	   { EXPAND }
+| "and"    { AND }
+| "or"     { OR }
 | "if"     { IF }
 | "else"   { ELSE }
 | "switch" { SWITCH }
@@ -52,11 +53,8 @@ rule token = parse
 (* RETURN *)
 | "return" { RETURN }
 | "int"    { INT    }
-| "int*"   { INT_   }
 | "bool"   { BOOL   }
-| "bool*"  { BOOL_  }
 | "float"  { FLOAT  }
-| "float*" { FLOAT_ }
 | "true"   { BLIT(true)  }
 | "false"  { BLIT(false) }
 | digit+ as lem  { ILIT(int_of_string lem) }

@@ -1,15 +1,25 @@
 /* The GCD algorithm in MicroC */
+int z;
+
+
+int zup() {
+    z += 1;
+	return z;
+}
+
 
 int main() {
   int a;
-  float b;
-  bool c;
-  a = 5;
-  b = 1.3;
-  c = (bool) (int) (b + 0.25);
-  if ( not c) 
-  	print(b);
-  else 
-    print(a);
+  float* b;
+  int i;
+  int size;
+  size = 5;
+  z = 0;
+  b = [(float) zup() ^ 5];
+  b = [(float) zup() ^ 5];
+
+  for (i = 0; i < size ; i+=1) {
+    print(b@i);
+  }
 return 0;
 }

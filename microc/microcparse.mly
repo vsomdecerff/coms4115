@@ -5,11 +5,11 @@ open Ast
 %}
 
 %token SEMI LPAREN RPAREN LBRACE RBRACE LBRACK RBRACK
-%token PLUS MINUS TIMES DIVIDE MODULO ASSIGN 
+%token PLUS MINUS TIMES DIVIDE MODULO ASSIGN EXPAND
 %token INCREMENT DECREMENT
 %token ASSIGNPLUS ASSIGNMINUS ASSIGNTIMES ASSIGNDIVIDE ASSIGNMODULO
 %token NEG NOT EQ NEQ LT GT LEQ GEQ AND OR AT
-%token IF ELSE SWITCH CASE DEFAULT WHILE DO FOR INT BOOL FLOAT INT_ BOOL_ FLOAT_
+%token IF ELSE SWITCH CASE DEFAULT WHILE DO FOR INT BOOL FLOAT 
 /* return, COMMA token */
 %token RETURN COMMA
 %token <int> ILIT
@@ -30,6 +30,7 @@ open Ast
 %left PLUS MINUS
 %left INCREMENT DECREMENT
 %left TIMES DIVIDE MODULO
+%left EXPAND
 %right NOT NEG
 
 %%
@@ -55,9 +56,9 @@ typ:
     INT    { Int   }
   | BOOL   { Bool  }
   | FLOAT  { Float }
-  | INT_   { Ptr(Int)   }
-  | BOOL_  { Ptr(Bool)  }
-  | FLOAT_ { Ptr(Float) }
+  | INT TIMES   { Ptr(Int)   }
+  | BOOL TIMES  { Ptr(Bool)  }
+  | FLOAT TIMES { Ptr(Float) }
 
 /* fdecl */
 fdecl:
@@ -112,6 +113,7 @@ primary_expr:
   | BLIT                     { BoolLit($1)  }
   | ID                       { Id($1)       }
   | LBRACK args_opt RBRACK   { List($2)     }
+  | LBRACK expr EXPAND ILIT RBRACK  { ListAlloc($2, $4)}
   | LPAREN expr RPAREN       { $2           }
 
 postfix_expr:

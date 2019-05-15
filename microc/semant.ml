@@ -181,6 +181,15 @@ let check (globals, functions) =
 		let f_ty = get_first_type el in 
 		let el' = check_if_type f_ty el 
 		in (Ptr(f_ty), SList(el'))
+
+	  | ListAlloc(e, i) -> 
+			let rec zeros n e l = 
+				if n = 0 then l 
+				else (zeros (n-1) e (e::l))
+			in 
+			let el = (zeros i e []) in 
+			check_expr (List(el))
+
       | ListAccess(l, i) -> 
 			let get_el_type = function 
 				Ptr(f_ty) -> f_ty

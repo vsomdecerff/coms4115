@@ -153,15 +153,15 @@ let translate (globals, functions) =
 	  | SBinop (e1, op, e2) ->
 		let t1 = fst e1 in 
 		let t2 = fst e2 in 
-		let e1' = (if t_ = A.Float && t1 != A.Float 
+		let e1' = (if (t_ = A.Float && t1 != A.Float) || (t_ = A.Bool && t1 != A.Float && t2 = A.Float)
 				   then L.build_sitofp (build_expr builder e1) flt_t "cst1" builder
 				   else build_expr builder e1)
 		in 
-		let e2' = (if t_ = A.Float && t2 != A.Float 
+		let e2' = (if (t_ = A.Float && t2 != A.Float) || (t_ = A.Bool && t2 != A.Float && t1 = A.Float)
 				   then L.build_sitofp (build_expr builder e2) flt_t "cst2" builder
 				   else build_expr builder e2)
 		in
-		if t_ = A.Int then
+		if t_ = A.Int || (t2 = A.Int && t1 = A.Int) then
 			(match op with
 			   A.Add     -> L.build_add
 			 | A.Sub     -> L.build_sub

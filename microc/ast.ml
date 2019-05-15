@@ -21,6 +21,7 @@ type expr =
   (* function call *)
   | Call of string * expr list
   | List of expr list
+  | ListAlloc of expr * int 
   | ListAccess of expr * expr
   | Cast of typ * expr 
 	
@@ -96,6 +97,7 @@ let rec string_of_expr = function
   | Call(f, el) ->
       f ^ "(" ^ String.concat ", " (List.map string_of_expr el) ^ ")"
   | List(el) -> "[ " ^ String.concat ", " (List.map string_of_expr el) ^ " ]"
+  | ListAlloc(e, i) -> "[ " ^ string_of_expr e ^ " ^ " ^ string_of_int i ^ " ]" 
   | ListAccess(l, i) -> string_of_expr l ^ " @ " ^ string_of_expr i 
   | Cast(t, e) -> "(" ^ string_of_typ t ^ ") " ^ string_of_expr e
 
