@@ -47,6 +47,7 @@ rule token = parse
 | "if"     { IF }
 | "else"   { ELSE }
 | "switch" { SWITCH }
+| "swap"   { SWAP 	}
 | "case"   { CASE }
 | "default"{ DEFAULT }
 | "while"  { WHILE }

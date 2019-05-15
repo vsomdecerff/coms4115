@@ -2,6 +2,9 @@
 int main() {
 	if (1 + 1 ==2) {
 		print("fish");
+		if (1 + 1 == 2) {
+			print ("nested fish");
+		}
 	}
 
 	if (-1 >= 0 ) {

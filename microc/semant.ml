@@ -245,10 +245,13 @@ let check (globals, functions) =
     with Not_found -> raise (Failure ("unrecognized function " ^ s ^ " " ^ string_of_int (StringMap.cardinal function_decls) ^ print_users (StringMap.bindings function_decls)))
   in
 
-	let rec check_nested_case_list e sl =
+	let rec check_nested_const_case_list e sl =
       match sl with
       | [] -> Block([])
-      | Case(ce, cs) :: sl' -> If( (Binop(e, Equal, ce)) , cs, Block((check_nested_case_list e sl')::[]))
+	  | Case(ce, cs) :: sl' -> (match ce with 
+			IntLit(_) | BoolLit(_) | StringLit(_) -> If( (Binop(e, Equal, ce)) , cs, Block((check_nested_const_case_list e sl')::[])) 
+			| _ -> raise (Failure ("Only const expressions in switch cases.  See swap"))
+			)
 	in 
 	let rec check_multi_case_list e sl = 
 	  match sl with 
@@ -272,7 +275,13 @@ let check (globals, functions) =
       | If(e, st1, st2) ->
         SIf(check_bool_expr e, check_stmt st1, check_stmt st2)
 
-	  | Switch(e, Block sl) -> check_stmt (Block(check_multi_case_list e sl))
+	 | Switch(e, Block sl) -> 
+			(match e with 
+			IntLit(_) | BoolLit(_) | FloatLit(_) | Id(_) ->  check_stmt (check_nested_const_case_list e sl)
+			| _ -> raise (Failure ("Can only use constant expressions in switch.  See swap"))
+		)
+	  | Swap(e, Block sl) ->
+			check_stmt (Block(check_multi_case_list e sl))
 
       | While(e, st) ->
         SWhile(check_bool_expr e, check_stmt st)

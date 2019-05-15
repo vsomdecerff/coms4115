@@ -9,7 +9,7 @@ open Ast
 %token INCREMENT DECREMENT
 %token ASSIGNPLUS ASSIGNMINUS ASSIGNTIMES ASSIGNDIVIDE ASSIGNMODULO
 %token NEG NOT EQ NEQ LT GT LEQ GEQ AND OR AT
-%token IF ELSE SWITCH CASE DEFAULT WHILE DO FOR INT BOOL FLOAT STRING
+%token IF ELSE SWITCH SWAP CASE DEFAULT WHILE DO FOR INT BOOL FLOAT STRING
 %token RETURN COMMA
 %token <int> ILIT
 %token <float> FLIT
@@ -99,6 +99,7 @@ selection_stmt:
 	 IF LPAREN expr RPAREN stmt %prec NO_ELSE { If($3, $5, Block([])) }
   |  IF LPAREN expr RPAREN stmt ELSE stmt     { If($3, $5, $7) }
   | SWITCH LPAREN expr RPAREN stmt          { Switch($3, $5) }
+  | SWAP LPAREN expr RPAREN stmt			{ Swap($3, $5) }
   | CASE LPAREN expr RPAREN stmt            { Case($3, $5)   }
   | DEFAULT stmt                            { Default($2)    }
 
