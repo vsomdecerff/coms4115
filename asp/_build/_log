@@ -1,0 +1,52 @@
+### Starting build.
+# Target: asp.ml.depends, tags: { package(llvm), package(llvm.analysis), warn(-8-26-11), bin_annot, extension:ml, file:asp.ml, ocaml, ocamldep, quiet, traverse }
+ocamlfind ocamldep -package llvm -package llvm.analysis -modules asp.ml > asp.ml.depends
+# Target: aspparse.mly, tags: { package(llvm), package(llvm.analysis), warn(-8-26-11), bin_annot, extension:mly, file:aspparse.mly, infer, ocaml, ocamlyacc, parser, quiet, traverse }
+/Users/vsomdec/.opam/4.07.1/bin/ocamlyacc aspparse.mly
+# Target: aspparse.mli.depends, tags: { package(llvm), package(llvm.analysis), warn(-8-26-11), bin_annot, extension:mli, file:aspparse.mli, ocaml, ocamldep, quiet, traverse }
+ocamlfind ocamldep -package llvm -package llvm.analysis -modules aspparse.mli > aspparse.mli.depends
+# Target: ast.ml.depends, tags: { package(llvm), package(llvm.analysis), warn(-8-26-11), bin_annot, extension:ml, file:ast.ml, ocaml, ocamldep, quiet, traverse }
+ocamlfind ocamldep -package llvm -package llvm.analysis -modules ast.ml > ast.ml.depends
+# Target: ast.cmo, tags: { package(llvm), package(llvm.analysis), warn(-8-26-11), bin_annot, byte, compile, extension:cmo, extension:ml, file:ast.cmo, file:ast.ml, implem, ocaml, quiet, traverse }
+ocamlfind ocamlc -c -bin-annot -w -8-26-11 -package llvm -package llvm.analysis -o ast.cmo ast.ml
+# Target: irgen.ml.depends, tags: { package(llvm), package(llvm.analysis), warn(-8-26-11), bin_annot, extension:ml, file:irgen.ml, ocaml, ocamldep, quiet, traverse }
+ocamlfind ocamldep -package llvm -package llvm.analysis -modules irgen.ml > irgen.ml.depends
+# Target: sast.ml.depends, tags: { package(llvm), package(llvm.analysis), warn(-8-26-11), bin_annot, extension:ml, file:sast.ml, ocaml, ocamldep, quiet, traverse }
+ocamlfind ocamldep -package llvm -package llvm.analysis -modules sast.ml > sast.ml.depends
+# Target: sast.cmo, tags: { package(llvm), package(llvm.analysis), warn(-8-26-11), bin_annot, byte, compile, extension:cmo, extension:ml, file:sast.cmo, file:sast.ml, implem, ocaml, quiet, traverse }
+ocamlfind ocamlc -c -bin-annot -w -8-26-11 -package llvm -package llvm.analysis -o sast.cmo sast.ml
+# Target: scanner.mll, tags: { package(llvm), package(llvm.analysis), warn(-8-26-11), bin_annot, extension:mll, file:scanner.mll, lexer, ocaml, ocamllex, quiet, traverse }
+/Users/vsomdec/.opam/4.07.1/bin/ocamllex.opt -q scanner.mll
+# Target: scanner.ml.depends, tags: { package(llvm), package(llvm.analysis), warn(-8-26-11), bin_annot, extension:ml, file:scanner.ml, ocaml, ocamldep, quiet, traverse }
+ocamlfind ocamldep -package llvm -package llvm.analysis -modules scanner.ml > scanner.ml.depends
+# Target: aspparse.cmi, tags: { package(llvm), package(llvm.analysis), warn(-8-26-11), bin_annot, byte, compile, extension:mli, file:aspparse.mli, interf, ocaml, quiet, traverse }
+ocamlfind ocamlc -c -bin-annot -w -8-26-11 -package llvm -package llvm.analysis -o aspparse.cmi aspparse.mli
+# Target: semant.ml.depends, tags: { package(llvm), package(llvm.analysis), warn(-8-26-11), bin_annot, extension:ml, file:semant.ml, ocaml, ocamldep, quiet, traverse }
+ocamlfind ocamldep -package llvm -package llvm.analysis -modules semant.ml > semant.ml.depends
+# Target: irgen.cmo, tags: { package(llvm), package(llvm.analysis), warn(-8-26-11), bin_annot, byte, compile, extension:cmo, extension:ml, file:irgen.cmo, file:irgen.ml, implem, ocaml, quiet, traverse }
+ocamlfind ocamlc -c -bin-annot -w -8-26-11 -package llvm -package llvm.analysis -o irgen.cmo irgen.ml
+# Target: scanner.cmo, tags: { package(llvm), package(llvm.analysis), warn(-8-26-11), bin_annot, byte, compile, extension:cmo, extension:ml, file:scanner.cmo, file:scanner.ml, implem, ocaml, quiet, traverse }
+ocamlfind ocamlc -c -bin-annot -w -8-26-11 -package llvm -package llvm.analysis -o scanner.cmo scanner.ml
+# Target: semant.cmo, tags: { package(llvm), package(llvm.analysis), warn(-8-26-11), bin_annot, byte, compile, extension:cmo, extension:ml, file:semant.cmo, file:semant.ml, implem, ocaml, quiet, traverse }
+ocamlfind ocamlc -c -bin-annot -w -8-26-11 -package llvm -package llvm.analysis -o semant.cmo semant.ml
+# Target: asp.cmo, tags: { package(llvm), package(llvm.analysis), warn(-8-26-11), bin_annot, byte, compile, extension:cmo, extension:ml, file:asp.cmo, file:asp.ml, implem, ocaml, quiet, traverse }
+ocamlfind ocamlc -c -bin-annot -w -8-26-11 -package llvm -package llvm.analysis -o asp.cmo asp.ml
+# Target: aspparse.ml.depends, tags: { package(llvm), package(llvm.analysis), warn(-8-26-11), bin_annot, extension:ml, file:aspparse.ml, ocaml, ocamldep, quiet, traverse }
+ocamlfind ocamldep -package llvm -package llvm.analysis -modules aspparse.ml > aspparse.ml.depends
+# Target: ast.cmx, tags: { package(llvm), package(llvm.analysis), warn(-8-26-11), bin_annot, compile, extension:cmx, extension:ml, file:ast.cmx, file:ast.ml, implem, native, ocaml, quiet, traverse }
+ocamlfind ocamlopt -c -bin-annot -w -8-26-11 -package llvm -package llvm.analysis -o ast.cmx ast.ml
+# Target: sast.cmx, tags: { package(llvm), package(llvm.analysis), warn(-8-26-11), bin_annot, compile, extension:cmx, extension:ml, file:sast.cmx, file:sast.ml, implem, native, ocaml, quiet, traverse }
+ocamlfind ocamlopt -c -bin-annot -w -8-26-11 -package llvm -package llvm.analysis -o sast.cmx sast.ml
+# Target: aspparse.cmx, tags: { package(llvm), package(llvm.analysis), warn(-8-26-11), bin_annot, compile, extension:cmx, extension:ml, file:aspparse.cmx, file:aspparse.ml, implem, native, ocaml, quiet, traverse }
+ocamlfind ocamlopt -c -bin-annot -w -8-26-11 -package llvm -package llvm.analysis -o aspparse.cmx aspparse.ml
+# Target: irgen.cmx, tags: { package(llvm), package(llvm.analysis), warn(-8-26-11), bin_annot, compile, extension:cmx, extension:ml, file:irgen.cmx, file:irgen.ml, implem, native, ocaml, quiet, traverse }
+ocamlfind ocamlopt -c -bin-annot -w -8-26-11 -package llvm -package llvm.analysis -o irgen.cmx irgen.ml
+# Target: scanner.cmx, tags: { package(llvm), package(llvm.analysis), warn(-8-26-11), bin_annot, compile, extension:cmx, extension:ml, file:scanner.cmx, file:scanner.ml, implem, native, ocaml, quiet, traverse }
+ocamlfind ocamlopt -c -bin-annot -w -8-26-11 -package llvm -package llvm.analysis -o scanner.cmx scanner.ml
+# Target: semant.cmx, tags: { package(llvm), package(llvm.analysis), warn(-8-26-11), bin_annot, compile, extension:cmx, extension:ml, file:semant.cmx, file:semant.ml, implem, native, ocaml, quiet, traverse }
+ocamlfind ocamlopt -c -bin-annot -w -8-26-11 -package llvm -package llvm.analysis -o semant.cmx semant.ml
+# Target: asp.cmx, tags: { package(llvm), package(llvm.analysis), warn(-8-26-11), bin_annot, compile, extension:cmx, extension:ml, file:asp.cmx, file:asp.ml, implem, native, ocaml, quiet, traverse }
+ocamlfind ocamlopt -c -bin-annot -w -8-26-11 -package llvm -package llvm.analysis -o asp.cmx asp.ml
+# Target: asp.native, tags: { package(llvm), package(llvm.analysis), warn(-8-26-11), bin_annot, dont_link_with, extension:native, file:asp.native, link, native, ocaml, program, quiet, traverse }
+ocamlfind ocamlopt -linkpkg -package llvm -package llvm.analysis ast.cmx aspparse.cmx sast.cmx irgen.cmx scanner.cmx semant.cmx asp.cmx -o asp.native
+# Compilation successful.

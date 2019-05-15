@@ -1,8 +1,0 @@
-elif 
-
-strings
-none
-
-continue
-break (return?)
-
