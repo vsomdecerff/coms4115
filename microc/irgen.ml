@@ -138,6 +138,18 @@ let translate (globals, functions) =
             let res = L.build_gep arr [| idx |] "access2" builder in
 		ignore (L.build_store e' res builder); e'
 
+	  | SCast (t, e) ->
+		let te = fst e in 
+		let e' = build_expr builder e in 
+		if t = te then e'
+		else if t = A.Float then L.build_sitofp (e') flt_t "cstf" builder
+		else if t = A.Bool then 
+				if te = A.Int then L.build_trunc (e') i1_t "cstb" builder		
+				else L.build_fptoui (e') i1_t "cstb" builder
+		else (* t = A.Int *)
+				if te = A.Bool then L.build_sext (e') i32_t "csti" builder
+				else L.build_fptoui (e') i32_t "csti" builder
+
 	  | SBinop (e1, op, e2) ->
 		let t1 = fst e1 in 
 		let t2 = fst e2 in 

@@ -1,11 +1,8 @@
 elif 
 
-float
 strings
 none
-lists
 
 continue
 break (return?)
 
-cast ?

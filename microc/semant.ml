@@ -189,6 +189,10 @@ let check (globals, functions) =
 			let ty = get_el_type (fst sl) in
 		 (ty , SListAccess(sl , (check_expr i)))
 
+      | Cast(t, e) -> 
+		 (t, SCast(t, check_expr e))
+      | _ as unk -> raise (Failure ("Unable to semantically parse " ^ string_of_expr unk ))
+
    and 
 	check_bool_expr e =
       let (t, e') = check_expr e in

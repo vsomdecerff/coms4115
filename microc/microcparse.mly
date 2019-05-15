@@ -88,51 +88,93 @@ stmt_list:
 stmt:
     expr SEMI                               { Expr $1      }
   | LBRACE stmt_list RBRACE                 { Block $2 }
-  /* if (condition) { block1} else {block2} */
-  /* if (condition) stmt else stmt */
-  | IF LPAREN expr RPAREN stmt ELSE stmt    { If($3, $5, $7) }
-  | SWITCH LPAREN expr RPAREN stmt		 	{ Switch($3, $5) }
-  | CASE LPAREN expr RPAREN stmt            { Case($3, $5)   }
-  | DEFAULT stmt							{ Default($2)    }
-  | WHILE LPAREN expr RPAREN stmt           { While ($3, $5)  }
-  | DO stmt WHILE LPAREN expr RPAREN 		{ Do ($5, $2) }
-  | FOR LPAREN expr SEMI expr SEMI expr RPAREN stmt { For($3, $5, $7, $9) } 
-  /* return */
   | RETURN expr SEMI                        { Return $2      }
+  | selection_stmt 							{ $1 }
+  | iteration_stmt							{ $1 }
 
-expr:
-  | ILIT   		     { IntLit($1)             }
-  | FLIT			 { FloatLit($1)			  }
-  | BLIT             { BoolLit($1)            }
-  | ID               { Id($1)                 }
-  | LBRACK args_opt RBRACK 		{ List($2)   }
-  | expr AT expr    			{ ListAccess($1, $3) }
-  | expr PLUS   expr { Binop($1, Add,   $3)   }
-  | expr MINUS  expr { Binop($1, Sub,   $3)   }
-  | expr TIMES  expr { Binop($1, Mul, $3) }
-  | expr DIVIDE expr { Binop($1, Div, $3) }
-  | expr MODULO expr { Binop($1, Mod, $3) }
-  | expr INCREMENT   { UnPostop($1, Incr) }
-  | expr DECREMENT   { UnPostop($1, Decr) }
-  | MINUS expr %prec NEG     { UnPreop(Neg, $2) }
-  | NOT expr %prec NOT 		 { UnPreop(Not, $2)   }
-  | expr EQ     expr { Binop($1, Equal, $3)   }
-  | expr NEQ    expr { Binop($1, Neq, $3)     }
-  | expr LT     expr { Binop($1, Less,  $3)   }
-  | expr GT     expr { Binop($1, Great,  $3)   }
-  | expr LEQ    expr { Binop($1, LessEqual,  $3)   }
-  | expr GEQ    expr { Binop($1, GreatEqual,  $3)   }
-  | expr AND    expr { Binop($1, And,   $3)   }
-  | expr OR     expr { Binop($1, Or,    $3)   }
-  | expr ASSIGN expr   { Assign($1, $3)         }
-  | expr ASSIGNPLUS expr { AssignBinop($1, Add, $3) }
-  | expr ASSIGNMINUS expr { AssignBinop($1, Sub, $3) }
-  | expr ASSIGNTIMES expr { AssignBinop($1, Mul, $3) }
-  | expr ASSIGNDIVIDE expr { AssignBinop($1, Div, $3) }
-  | expr ASSIGNMODULO expr { AssignBinop($1, Mod, $3) }
-  | LPAREN expr RPAREN { $2                   }
-  /* call */
-  | ID LPAREN args_opt RPAREN { Call ($1, $3)  }
+selection_stmt:
+    IF LPAREN expr RPAREN stmt ELSE stmt    { If($3, $5, $7) }
+  | SWITCH LPAREN expr RPAREN stmt          { Switch($3, $5) }
+  | CASE LPAREN expr RPAREN stmt            { Case($3, $5)   }
+  | DEFAULT stmt                            { Default($2)    }
+
+iteration_stmt:
+    WHILE LPAREN expr RPAREN stmt           { While ($3, $5)  }
+  | DO stmt WHILE LPAREN expr RPAREN        { Do ($5, $2) }
+  | FOR LPAREN expr SEMI expr SEMI expr RPAREN stmt { For($3, $5, $7, $9) }
+  
+expr:						
+  assignment_expr 							{ $1 }
+
+primary_expr:
+  | ILIT                     { IntLit($1)   }
+  | FLIT                     { FloatLit($1) }
+  | BLIT                     { BoolLit($1)  }
+  | ID                       { Id($1)       }
+  | LBRACK args_opt RBRACK   { List($2)     }
+  | LPAREN expr RPAREN       { $2           }
+
+postfix_expr:
+    primary_expr				   { $1 }
+  | postfix_expr INCREMENT         { UnPostop($1, Incr) }
+  | postfix_expr DECREMENT         { UnPostop($1, Decr) }
+  | postfix_expr AT primary_expr   { ListAccess($1, $3) }
+  | ID LPAREN args_opt RPAREN      { Call ($1, $3)  }
+
+
+
+unary_expr:
+    postfix_expr                   { $1 }
+  | MINUS unary_expr %prec NEG     { UnPreop(Neg, $2) }
+  | NOT unary_expr %prec NOT       { UnPreop(Not, $2) }
+
+cast_expr:
+    unary_expr                  { $1 }
+  | LPAREN typ RPAREN cast_expr {Cast($2, $4) }
+
+
+mult_expr:
+    cast_expr                  { $1 }
+  | mult_expr TIMES  cast_expr { Binop($1, Mul, $3) }
+  | mult_expr DIVIDE cast_expr { Binop($1, Div, $3) }
+  | mult_expr MODULO cast_expr { Binop($1, Mod, $3) }
+
+add_expr:
+    mult_expr                 { $1 }
+  | add_expr PLUS   mult_expr { Binop($1, Add,   $3)   }
+  | add_expr MINUS  mult_expr { Binop($1, Sub,   $3)   }
+
+relational_expr:
+    add_expr                     { $1 }
+  | relational_expr LT  add_expr { Binop($1, Less,  $3)   }
+  | relational_expr GT  add_expr { Binop($1, Great,  $3)   }
+  | relational_expr LEQ add_expr { Binop($1, LessEqual,  $3)   }
+  | relational_expr GEQ add_expr { Binop($1, GreatEqual,  $3)   }
+
+
+equality_expr:
+    relational_expr                   { $1 }
+  | equality_expr EQ  relational_expr { Binop($1, Equal, $3)   }
+  | equality_expr NEQ relational_expr { Binop($1, Neq, $3)     }
+
+
+logical_and_expr: 
+    equality_expr                      { $1 }
+  | logical_and_expr AND equality_expr { Binop($1, And,   $3)   }
+
+logical_or_expr:
+  logical_and_expr                      { $1 }
+  | logical_or_expr OR logical_and_expr { Binop($1, Or,    $3)   }
+
+assignment_expr:
+    logical_or_expr			                      { $1 }
+  | unary_expr ASSIGN assignment_expr   		  { Assign($1, $3)         }
+  | unary_expr ASSIGNPLUS assignment_expr   	{ AssignBinop($1, Add, $3) }
+  | unary_expr ASSIGNMINUS assignment_expr 	  { AssignBinop($1, Sub, $3) }
+  | unary_expr ASSIGNTIMES assignment_expr 	  { AssignBinop($1, Mul, $3) }
+  | unary_expr ASSIGNDIVIDE assignment_expr 	{ AssignBinop($1, Div, $3) }
+  | unary_expr ASSIGNMODULO assignment_expr 	{ AssignBinop($1, Mod, $3) }
+
 
 /* args_opt*/
 args_opt:

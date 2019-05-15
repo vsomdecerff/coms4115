@@ -22,6 +22,7 @@ type expr =
   | Call of string * expr list
   | List of expr list
   | ListAccess of expr * expr
+  | Cast of typ * expr 
 	
 type stmt =
     Block of stmt list
@@ -49,6 +50,12 @@ type func_def = {
 }
 
 type program = bind list * func_def list
+
+let rec string_of_typ = function
+    Int -> "int"
+  | Bool -> "bool"
+  | Float -> "float"
+  | Ptr(t) -> string_of_typ t ^ " *"
 
 (* Pretty-printing functions *)
 let string_of_op = function
@@ -90,6 +97,7 @@ let rec string_of_expr = function
       f ^ "(" ^ String.concat ", " (List.map string_of_expr el) ^ ")"
   | List(el) -> "[ " ^ String.concat ", " (List.map string_of_expr el) ^ " ]"
   | ListAccess(l, i) -> string_of_expr l ^ " @ " ^ string_of_expr i 
+  | Cast(t, e) -> "(" ^ string_of_typ t ^ ") " ^ string_of_expr e
 
 let rec string_of_stmt = function
     Block(stmts) ->
@@ -105,12 +113,6 @@ let rec string_of_stmt = function
   | Do(e, s) -> "do " ^ string_of_stmt s ^ "\nwhile ( " ^ string_of_expr e ^ " )" 
   | For(e1, e2, e3, s) -> "for (" ^ string_of_expr e1 ^ "; " ^ string_of_expr e2 ^ "; " ^ string_of_expr e3 ^ ") " ^ 
 						   string_of_stmt s
-
-let rec string_of_typ = function
-    Int -> "int"
-  | Bool -> "bool"
-  | Float -> "float"
-  | Ptr(t) -> string_of_typ t ^ " *"
 
 let string_of_vdecl (t, id) = string_of_typ t ^ " " ^ id ^ ";\n"
 

@@ -10,12 +10,28 @@ define i32 @main() {
 entry:
   %a = alloca i32
   %b = alloca double
-  store i32 1, i32* %a
-  store double 2.500000e-01, double* %b
-  %a1 = load i32, i32* %a
-  %cst1 = sitofp i32 %a1 to double
-  %b2 = load double, double* %b
-  %tmp = fadd double %cst1, %b2
-  %printf = call i32 (i8*, ...) @printf(i8* getelementptr inbounds ([4 x i8], [4 x i8]* @fmt.1, i32 0, i32 0), double %tmp)
+  %c = alloca i1
+  store i32 5, i32* %a
+  store double 1.300000e+00, double* %b
+  %b1 = load double, double* %b
+  %tmp = fadd double %b1, 2.500000e-01
+  %csti = fptoui double %tmp to i32
+  %cstb = trunc i32 %csti to i1
+  store i1 %cstb, i1* %c
+  %c2 = load i1, i1* %c
+  %tmp3 = xor i1 %c2, true
+  br i1 %tmp3, label %then, label %else
+
+merge:                                            ; preds = %else, %then
   ret i32 0
+
+then:                                             ; preds = %entry
+  %b4 = load double, double* %b
+  %printf = call i32 (i8*, ...) @printf(i8* getelementptr inbounds ([4 x i8], [4 x i8]* @fmt.1, i32 0, i32 0), double %b4)
+  br label %merge
+
+else:                                             ; preds = %entry
+  %a5 = load i32, i32* %a
+  %printf6 = call i32 (i8*, ...) @printf(i8* getelementptr inbounds ([4 x i8], [4 x i8]* @fmt, i32 0, i32 0), i32 %a5)
+  br label %merge
 }
