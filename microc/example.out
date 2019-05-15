@@ -1,101 +1,30 @@
 ; ModuleID = 'MicroC'
 source_filename = "MicroC"
 
-@z = global i32 0
 @fmt = private unnamed_addr constant [4 x i8] c"%d\0A\00"
 @fmt.1 = private unnamed_addr constant [4 x i8] c"%f\0A\00"
-@fmt.2 = private unnamed_addr constant [4 x i8] c"%d\0A\00"
-@fmt.3 = private unnamed_addr constant [4 x i8] c"%f\0A\00"
+@fmt.2 = private unnamed_addr constant [4 x i8] c"%s\0A\00"
+@str = private unnamed_addr constant [6 x i8] c"\22foo\22\00"
 
 declare i32 @printf(i8*, ...)
 
-define i32 @zup() {
-entry:
-  %z = load i32, i32* @z
-  %tmp = add i32 %z, 1
-  store i32 %tmp, i32* @z
-  %z1 = load i32, i32* @z
-  ret i32 %z1
-}
-
 define i32 @main() {
 entry:
-  %a = alloca i32
-  %b = alloca double*
-  %i = alloca i32
-  %size = alloca i32
-  store i32 5, i32* %size
-  store i32 0, i32* @z
-  %malloccall = tail call i8* @malloc(i32 mul (i32 ptrtoint (i1** getelementptr (i1*, i1** null, i32 1) to i32), i32 5))
-  %init1 = bitcast i8* %malloccall to double**
-  %init2 = bitcast double** %init1 to double*
-  %zup_result = call i32 @zup()
-  %cstf = sitofp i32 %zup_result to double
-  %zup_result1 = call i32 @zup()
-  %cstf2 = sitofp i32 %zup_result1 to double
-  %zup_result3 = call i32 @zup()
-  %cstf4 = sitofp i32 %zup_result3 to double
-  %zup_result5 = call i32 @zup()
-  %cstf6 = sitofp i32 %zup_result5 to double
-  %zup_result7 = call i32 @zup()
-  %cstf8 = sitofp i32 %zup_result7 to double
-  %init4 = getelementptr double, double* %init2, i32 0
-  store double %cstf, double* %init4
-  %init49 = getelementptr double, double* %init2, i32 1
-  store double %cstf2, double* %init49
-  %init410 = getelementptr double, double* %init2, i32 2
-  store double %cstf4, double* %init410
-  %init411 = getelementptr double, double* %init2, i32 3
-  store double %cstf6, double* %init411
-  %init412 = getelementptr double, double* %init2, i32 4
-  store double %cstf8, double* %init412
-  store double* %init2, double** %b
-  %malloccall13 = tail call i8* @malloc(i32 mul (i32 ptrtoint (i1** getelementptr (i1*, i1** null, i32 1) to i32), i32 5))
-  %init114 = bitcast i8* %malloccall13 to double**
-  %init215 = bitcast double** %init114 to double*
-  %zup_result16 = call i32 @zup()
-  %cstf17 = sitofp i32 %zup_result16 to double
-  %zup_result18 = call i32 @zup()
-  %cstf19 = sitofp i32 %zup_result18 to double
-  %zup_result20 = call i32 @zup()
-  %cstf21 = sitofp i32 %zup_result20 to double
-  %zup_result22 = call i32 @zup()
-  %cstf23 = sitofp i32 %zup_result22 to double
-  %zup_result24 = call i32 @zup()
-  %cstf25 = sitofp i32 %zup_result24 to double
-  %init426 = getelementptr double, double* %init215, i32 0
-  store double %cstf17, double* %init426
-  %init427 = getelementptr double, double* %init215, i32 1
-  store double %cstf19, double* %init427
-  %init428 = getelementptr double, double* %init215, i32 2
-  store double %cstf21, double* %init428
-  %init429 = getelementptr double, double* %init215, i32 3
-  store double %cstf23, double* %init429
-  %init430 = getelementptr double, double* %init215, i32 4
-  store double %cstf25, double* %init430
-  store double* %init215, double** %b
-  store i32 0, i32* %i
-  br label %while
-
-while:                                            ; preds = %while_body, %entry
-  %i31 = load i32, i32* %i
-  %size32 = load i32, i32* %size
-  %tmp = icmp slt i32 %i31, %size32
-  br i1 %tmp, label %while_body, label %while_end
-
-while_body:                                       ; preds = %while
-  %i33 = load i32, i32* %i
-  %access1 = add i32 %i33, 0
-  %b34 = load double*, double** %b
-  %access2 = getelementptr double, double* %b34, i32 %access1
-  %access3 = load double, double* %access2
-  %printf = call i32 (i8*, ...) @printf(i8* getelementptr inbounds ([4 x i8], [4 x i8]* @fmt.3, i32 0, i32 0), double %access3)
-  %i35 = load i32, i32* %i
-  %tmp36 = add i32 %i35, 1
-  store i32 %tmp36, i32* %i
-  br label %while
-
-while_end:                                        ; preds = %while
+  %a = alloca i32*
+  %s = alloca i8*
+  %malloccall = tail call i8* @malloc(i32 ptrtoint (i1** getelementptr (i1*, i1** null, i32 1) to i32))
+  %init1 = bitcast i8* %malloccall to i32**
+  %init2 = bitcast i32** %init1 to i32*
+  %init4 = getelementptr i32, i32* %init2, i32 0
+  store i32 1, i32* %init4
+  store i32* %init2, i32** %a
+  store i8* getelementptr inbounds ([6 x i8], [6 x i8]* @str, i32 0, i32 0), i8** %s
+  %a1 = load i32*, i32** %a
+  %access2 = getelementptr i32, i32* %a1, i32 0
+  %access3 = load i32, i32* %access2
+  %printf = call i32 (i8*, ...) @printf(i8* getelementptr inbounds ([4 x i8], [4 x i8]* @fmt, i32 0, i32 0), i32 %access3)
+  %s2 = load i8*, i8** %s
+  %printf3 = call i32 (i8*, ...) @printf(i8* getelementptr inbounds ([4 x i8], [4 x i8]* @fmt.2, i32 0, i32 0), i8* %s2)
   ret i32 0
 }
 

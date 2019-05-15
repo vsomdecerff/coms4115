@@ -9,13 +9,13 @@ open Ast
 %token INCREMENT DECREMENT
 %token ASSIGNPLUS ASSIGNMINUS ASSIGNTIMES ASSIGNDIVIDE ASSIGNMODULO
 %token NEG NOT EQ NEQ LT GT LEQ GEQ AND OR AT
-%token IF ELSE SWITCH CASE DEFAULT WHILE DO FOR INT BOOL FLOAT 
+%token IF ELSE SWITCH CASE DEFAULT WHILE DO FOR INT BOOL FLOAT STRING
 /* return, COMMA token */
 %token RETURN COMMA
 %token <int> ILIT
 %token <float> FLIT
 %token <bool> BLIT
-%token <string> ID
+%token <string> ID SLIT
 %token EOF
 
 %start program
@@ -56,6 +56,7 @@ typ:
     INT    { Int   }
   | BOOL   { Bool  }
   | FLOAT  { Float }
+  | STRING { String}
   | INT TIMES   { Ptr(Int)   }
   | BOOL TIMES  { Ptr(Bool)  }
   | FLOAT TIMES { Ptr(Float) }
@@ -111,6 +112,7 @@ primary_expr:
   | ILIT                     { IntLit($1)   }
   | FLIT                     { FloatLit($1) }
   | BLIT                     { BoolLit($1)  }
+  | SLIT					 { StringLit($1)}
   | ID                       { Id($1)       }
   | LBRACK args_opt RBRACK   { List($2)     }
   | LBRACK expr EXPAND ILIT RBRACK  { ListAlloc($2, $4)}

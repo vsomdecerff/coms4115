@@ -30,19 +30,22 @@ let translate (globals, functions) =
   let i32_t      = L.i32_type    context
   and flt_t 	 = L.double_type  context 
   and i8_t       = L.i8_type     context
+  and str_t 	 = L.pointer_type (L.i8_type context)
   and i1_t       = L.i1_type     context in
 
   (* Return the LLVM type for a MicroC type *)
   let rec ltype_of_typ = function
-      A.Int   -> i32_t
-    | A.Float -> flt_t
-    | A.Bool  -> i1_t
+      A.Int     -> i32_t
+    | A.Float   -> flt_t
+    | A.Bool    -> i1_t
+    | A.String  -> str_t
     | A.Ptr(t)  -> L.pointer_type (ltype_of_typ t)
   in
   let rec string_of_Atyp = function
-      A.Int   -> "int"
-    | A.Float -> "float"
-    | A.Bool  -> "bool"
+      A.Int     -> "int"
+    | A.Float   -> "float"
+    | A.Bool    -> "bool"
+    | A.String  -> "string"
     | A.Ptr(t)  -> (string_of_Atyp t) ^"*"
   in
 
@@ -88,6 +91,7 @@ let translate (globals, functions) =
 
     let int_format_str = L.build_global_stringptr "%d\n" "fmt" builder in
 	let float_format_str = L.build_global_stringptr "%f\n" "fmt" builder in 
+    let string_format_str = L.build_global_stringptr "%s\n" "fmt" builder in
 
     (* Construct the function's "locals": formal arguments and locally
        declared variables.  Allocate each on the stack, initialize their
@@ -120,17 +124,13 @@ let translate (globals, functions) =
 
     (* Construct code for an expression; return its value *)
     let rec build_expr builder ((t_, e) : sexpr) = match e with
-        SIntLit i  -> L.const_int i32_t i
-      | SFloatLit f -> L.const_float flt_t f
-      | SBoolLit b  -> L.const_int i1_t (if b then 1 else 0)
-      | SId s       -> L.build_load (lookup s) s builder
+        SIntLit i     -> L.const_int i32_t i
+      | SFloatLit f   -> L.const_float flt_t f
+      | SBoolLit b    -> L.const_int i1_t (if b then 1 else 0)
+      | SStringLit s  -> L.build_global_stringptr s "str" builder
+      | SId s         -> L.build_load (lookup s) s builder
       | SAssign ( (lt, SId(s)), e) -> let e' = build_expr builder e in
-			ignore ((match t_ with 
-				A.Int      -> L.build_store
-				| A.Float  -> L.build_store
-				| A.Bool   -> L.build_store 
-				| A.Ptr(_) -> L.build_store 
-			) e' (lookup s)  builder); e'
+			ignore (L.build_store e' (lookup s)  builder); e'
 	  | SAssign ( (lt, SListAccess(l, i)), e) -> let e' = build_expr builder e in
 		    let idx = build_expr builder i  in
             let idx = L.build_add idx (L.const_int i32_t 0) "access1" builder in
@@ -220,6 +220,10 @@ let translate (globals, functions) =
 	  | SCall ("print", [e]) when "print"^get_sformal_types[e] = "printfloat_" ->
         L.build_call printf_func [| float_format_str ; (build_expr builder e) |]
           "printf" builder 
+	  | SCall ("print", [e]) when "print"^get_sformal_types[e] = "printstring_" ->
+        L.build_call printf_func [| string_format_str ; (build_expr builder e) |]
+          "printf" builder
+
       | SCall (f, args) ->
 		try 
         let (fdef, fdecl) = StringMap.find (f^get_sformal_types args) function_decls in

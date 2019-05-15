@@ -27,16 +27,22 @@ let check (globals, functions) =
 
   (* Collect function declarations for built-in functions: no bodies *)
   let built_in_decls =
-    StringMap.add "printfloat_" {
-	rtyp = Float;
-    fname = "print";
-    formals = [(Float, "x")];
-    locals = []; body = [] }  
+	StringMap.add "printstring_" {
+		rtyp = String;
+        fname = "print";
+        formals = [(String, "x")];
+        locals = []; body = [] }  
+		
+		(StringMap.add "printfloat_" {
+		rtyp = Float;
+		fname = "print";
+		formals = [(Float, "x")];
+		locals = []; body = [] }  
 		(StringMap.add "printint_" {
-     	rtyp = Int;
-     	fname = "print";
-      	formals = [(Int, "x")];
-      	locals = []; body = [] } StringMap.empty)
+		rtyp = Int;
+		fname = "print";
+		formals = [(Int, "x")];
+		locals = []; body = [] } StringMap.empty) ) 
   in
   let rec get_built_types = function
     [] -> "_"
@@ -93,6 +99,7 @@ let check (globals, functions) =
         IntLit l -> (Int, SIntLit l)
 	  | FloatLit l -> (Float, SFloatLit l)
       | BoolLit l -> (Bool, SBoolLit l)
+      | StringLit l -> (String, SStringLit l)
       | Id var -> (type_of_identifier var, SId var)
 	  | AssignBinop(var, op, e) -> check_expr (Assign(var, Binop(var, op, e)))
 	  | UnPostop(var, op) -> let op' = match op with 
