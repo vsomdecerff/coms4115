@@ -40,7 +40,7 @@ int main() {
 	}
 
 
-	// dangerous example
+	# dangerous example
 	b = 8;
 	z = 8;
 	switch (b) {

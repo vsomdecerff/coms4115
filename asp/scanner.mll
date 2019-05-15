@@ -9,8 +9,8 @@ let ascii =  ['\x20'-'\x5B' '\x5D'-'\x7E']
 
 rule token = parse
   [' ' '\t' '\r' '\n'] { token lexbuf } (* Whitespace *)
-| "/*"     { comment lexbuf }           (* Comments *)
-| "//" 	   { single_comment lexbuf }
+| "\"\"\""     { comment lexbuf }           (* Comments *)
+| '#' 	   { single_comment lexbuf }
 | '('      { LPAREN }
 | ')'      { RPAREN }
 | '{'      { LBRACE }
@@ -69,7 +69,7 @@ rule token = parse
 | _ as char { raise (Failure("illegal character " ^ Char.escaped char)) }
 
 and comment = parse
-  "*/" { token lexbuf }
+  "\"\"\"" { token lexbuf }
 | _    { comment lexbuf }
 
 and single_comment = parse
