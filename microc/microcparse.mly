@@ -10,7 +10,6 @@ open Ast
 %token ASSIGNPLUS ASSIGNMINUS ASSIGNTIMES ASSIGNDIVIDE ASSIGNMODULO
 %token NEG NOT EQ NEQ LT GT LEQ GEQ AND OR AT
 %token IF ELSE SWITCH CASE DEFAULT WHILE DO FOR INT BOOL FLOAT STRING
-/* return, COMMA token */
 %token RETURN COMMA
 %token <int> ILIT
 %token <float> FLIT
@@ -33,6 +32,8 @@ open Ast
 %left EXPAND
 %right NOT NEG
 
+%nonassoc NO_ELSE
+%nonassoc ELSE
 %%
 
 /* add function declarations*/
@@ -95,7 +96,8 @@ stmt:
   | iteration_stmt							{ $1 }
 
 selection_stmt:
-    IF LPAREN expr RPAREN stmt ELSE stmt    { If($3, $5, $7) }
+	 IF LPAREN expr RPAREN stmt %prec NO_ELSE { If($3, $5, Block([])) }
+  |  IF LPAREN expr RPAREN stmt ELSE stmt     { If($3, $5, $7) }
   | SWITCH LPAREN expr RPAREN stmt          { Switch($3, $5) }
   | CASE LPAREN expr RPAREN stmt            { Case($3, $5)   }
   | DEFAULT stmt                            { Default($2)    }

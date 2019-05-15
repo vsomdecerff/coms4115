@@ -37,12 +37,19 @@ let check (globals, functions) =
 		rtyp = Float;
 		fname = "print";
 		formals = [(Float, "x")];
-		locals = []; body = [] }  
+		locals = []; body = [] }
+  
+		(StringMap.add "printbool_" {
+        rtyp = Bool;
+        fname = "print";
+        formals = [(Bool, "x")];
+        locals = []; body = [] }
+
 		(StringMap.add "printint_" {
 		rtyp = Int;
 		fname = "print";
 		formals = [(Int, "x")];
-		locals = []; body = [] } StringMap.empty) ) 
+		locals = []; body = [] } StringMap.empty) ) )
   in
   let rec get_built_types = function
     [] -> "_"
@@ -117,6 +124,9 @@ let check (globals, functions) =
         let err = "illegal assignment " ^ string_of_typ lt ^ " = " ^
                   string_of_typ rt ^ " in " ^ string_of_expr ex
         in
+		if lt = Float &&  rt = Int then 
+			(lt, SAssign((lt, SId(var)), (rt, e')))
+		else 
         (check_assign lt rt err, SAssign((lt, SId(var)), (rt, e')))
 
 	  | Assign(ListAccess(l, i), e) as ex ->

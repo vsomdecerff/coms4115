@@ -129,8 +129,14 @@ let translate (globals, functions) =
       | SBoolLit b    -> L.const_int i1_t (if b then 1 else 0)
       | SStringLit s  -> L.build_global_stringptr s "str" builder
       | SId s         -> L.build_load (lookup s) s builder
-      | SAssign ( (lt, SId(s)), e) -> let e' = build_expr builder e in
-			ignore (L.build_store e' (lookup s)  builder); e'
+      | SAssign ( (lt, SId(s)), e) -> 
+			let e' = build_expr builder e in
+			let rt = fst e in
+			if lt = A.Float && rt = A.Int then
+				let ce' = L.build_sitofp (e') flt_t "cstf" builder in
+				 ignore (L.build_store ce' (lookup s) builder); ce'
+			else let nop = 0 in
+				ignore (L.build_store e' (lookup s)  builder); e'
 	  | SAssign ( (lt, SListAccess(l, i)), e) -> let e' = build_expr builder e in
 		    let idx = build_expr builder i  in
             let idx = L.build_add idx (L.const_int i32_t 0) "access1" builder in
@@ -214,7 +220,7 @@ let translate (globals, functions) =
 			let res = L.build_gep arr [| idx |] "access2" builder in
 		L.build_load res "access3" builder
 
-	  | SCall ("print", [e]) when "print"^get_sformal_types[e] = "printint_" ->
+	  | SCall ("print", [e]) when "print"^get_sformal_types[e] = "printint_" || "print"^get_sformal_types[e] = "printbool_" ->
         L.build_call printf_func [| int_format_str ; (build_expr builder e) |]
           "printf" builder
 	  | SCall ("print", [e]) when "print"^get_sformal_types[e] = "printfloat_" ->
