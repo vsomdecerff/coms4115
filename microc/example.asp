@@ -1,4 +1,3 @@
-/* The GCD algorithm in MicroC */
 int main() {
   int* a;
   string s;
