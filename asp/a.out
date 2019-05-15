@@ -4,128 +4,174 @@ source_filename = "ASP"
 @fmt = private unnamed_addr constant [4 x i8] c"%d\0A\00"
 @fmt.1 = private unnamed_addr constant [4 x i8] c"%f\0A\00"
 @fmt.2 = private unnamed_addr constant [4 x i8] c"%s\0A\00"
-@str = private unnamed_addr constant [7 x i8] c"\22sum:\22\00"
+@fmt.3 = private unnamed_addr constant [4 x i8] c"%d\0A\00"
+@fmt.4 = private unnamed_addr constant [4 x i8] c"%f\0A\00"
+@fmt.5 = private unnamed_addr constant [4 x i8] c"%s\0A\00"
 
 declare i32 @printf(i8*, ...)
 
-define i32 @main() {
+define i32 @bubbleSort(i32* %arr, i32 %n) {
 entry:
-  %sum1 = alloca i32
-  %sum2 = alloca i32
-  %correct = alloca i32
-  %num = alloca i32
+  %arr1 = alloca i32*
+  store i32* %arr, i32** %arr1
+  %n2 = alloca i32
+  store i32 %n, i32* %n2
+  %i = alloca i32
   %j = alloca i32
-  %k = alloca i32
-  store i32 0, i32* %sum1
-  store i32 0, i32* %sum2
-  store i32 0, i32* %correct
-  store i32 1, i32* %num
+  %temp = alloca i32
+  %swapped = alloca i1
+  %cont = alloca i1
+  store i1 true, i1* %cont
+  store i32 0, i32* %i
   br label %while
 
-while:                                            ; preds = %merge41, %entry
-  %num1 = load i32, i32* %num
-  %tmp = icmp slt i32 %num1, 10000
-  br i1 %tmp, label %while_body, label %while_end50
+while:                                            ; preds = %merge50, %entry
+  %i3 = load i32, i32* %i
+  %n4 = load i32, i32* %n2
+  %tmp = sub i32 %n4, 1
+  %tmp5 = icmp slt i32 %i3, %tmp
+  %cont6 = load i1, i1* %cont
+  %tmp7 = and i1 %tmp5, %cont6
+  br i1 %tmp7, label %while_body, label %while_end55
 
 while_body:                                       ; preds = %while
-  store i32 1, i32* %j
-  br label %while2
+  store i1 false, i1* %swapped
+  store i32 0, i32* %j
+  br label %while8
 
-while2:                                           ; preds = %merge, %while_body
-  %j3 = load i32, i32* %j
-  %num4 = load i32, i32* %num
-  %tmp5 = icmp slt i32 %j3, %num4
-  br i1 %tmp5, label %while_body6, label %while_end
+while8:                                           ; preds = %merge, %while_body
+  %j9 = load i32, i32* %j
+  %n10 = load i32, i32* %n2
+  %i11 = load i32, i32* %i
+  %tmp12 = sub i32 %n10, %i11
+  %tmp13 = sub i32 %tmp12, 1
+  %tmp14 = icmp slt i32 %j9, %tmp13
+  br i1 %tmp14, label %while_body15, label %while_end
 
-while_body6:                                      ; preds = %while2
-  %num7 = load i32, i32* %num
-  %j8 = load i32, i32* %j
-  %tmp9 = srem i32 %num7, %j8
-  %tmp10 = icmp eq i32 %tmp9, 0
-  br i1 %tmp10, label %then, label %else
+while_body15:                                     ; preds = %while8
+  %j16 = load i32, i32* %j
+  %access1 = add i32 %j16, 0
+  %arr17 = load i32*, i32** %arr1
+  %access2 = getelementptr i32, i32* %arr17, i32 %access1
+  %access3 = load i32, i32* %access2
+  %j18 = load i32, i32* %j
+  %tmp19 = add i32 %j18, 1
+  %access120 = add i32 %tmp19, 0
+  %arr21 = load i32*, i32** %arr1
+  %access222 = getelementptr i32, i32* %arr21, i32 %access120
+  %access323 = load i32, i32* %access222
+  %tmp24 = icmp sgt i32 %access3, %access323
+  br i1 %tmp24, label %then, label %else
 
 merge:                                            ; preds = %else, %then
-  %j14 = load i32, i32* %j
-  %tmp15 = add i32 %j14, 1
-  store i32 %tmp15, i32* %j
-  br label %while2
+  %j46 = load i32, i32* %j
+  %tmp47 = add i32 %j46, 1
+  store i32 %tmp47, i32* %j
+  br label %while8
 
-then:                                             ; preds = %while_body6
-  %sum111 = load i32, i32* %sum1
-  %j12 = load i32, i32* %j
-  %tmp13 = add i32 %sum111, %j12
-  store i32 %tmp13, i32* %sum1
+then:                                             ; preds = %while_body15
+  %j25 = load i32, i32* %j
+  %access126 = add i32 %j25, 0
+  %arr27 = load i32*, i32** %arr1
+  %access228 = getelementptr i32, i32* %arr27, i32 %access126
+  %access329 = load i32, i32* %access228
+  store i32 %access329, i32* %temp
+  %j30 = load i32, i32* %j
+  %tmp31 = add i32 %j30, 1
+  %access132 = add i32 %tmp31, 0
+  %arr33 = load i32*, i32** %arr1
+  %access234 = getelementptr i32, i32* %arr33, i32 %access132
+  %access335 = load i32, i32* %access234
+  %j36 = load i32, i32* %j
+  %access137 = add i32 %j36, 0
+  %arr38 = load i32*, i32** %arr1
+  %access239 = getelementptr i32, i32* %arr38, i32 %access137
+  store i32 %access335, i32* %access239
+  %temp40 = load i32, i32* %temp
+  %j41 = load i32, i32* %j
+  %tmp42 = add i32 %j41, 1
+  %access143 = add i32 %tmp42, 0
+  %arr44 = load i32*, i32** %arr1
+  %access245 = getelementptr i32, i32* %arr44, i32 %access143
+  store i32 %temp40, i32* %access245
+  store i1 true, i1* %swapped
   br label %merge
 
-else:                                             ; preds = %while_body6
+else:                                             ; preds = %while_body15
   br label %merge
 
-while_end:                                        ; preds = %while2
-  store i32 1, i32* %k
-  br label %while16
+while_end:                                        ; preds = %while8
+  %swapped48 = load i1, i1* %swapped
+  %tmp49 = icmp eq i1 %swapped48, false
+  br i1 %tmp49, label %then51, label %else52
 
-while16:                                          ; preds = %merge25, %while_end
-  %k17 = load i32, i32* %k
-  %sum118 = load i32, i32* %sum1
-  %tmp19 = icmp slt i32 %k17, %sum118
-  br i1 %tmp19, label %while_body20, label %while_end33
-
-while_body20:                                     ; preds = %while16
-  %sum121 = load i32, i32* %sum1
-  %k22 = load i32, i32* %k
-  %tmp23 = srem i32 %sum121, %k22
-  %tmp24 = icmp eq i32 %tmp23, 0
-  br i1 %tmp24, label %then26, label %else30
-
-merge25:                                          ; preds = %else30, %then26
-  %k31 = load i32, i32* %k
-  %tmp32 = add i32 %k31, 1
-  store i32 %tmp32, i32* %k
-  br label %while16
-
-then26:                                           ; preds = %while_body20
-  %sum227 = load i32, i32* %sum2
-  %k28 = load i32, i32* %k
-  %tmp29 = add i32 %sum227, %k28
-  store i32 %tmp29, i32* %sum2
-  br label %merge25
-
-else30:                                           ; preds = %while_body20
-  br label %merge25
-
-while_end33:                                      ; preds = %while16
-  %num34 = load i32, i32* %num
-  %sum235 = load i32, i32* %sum2
-  %tmp36 = icmp eq i32 %num34, %sum235
-  %sum137 = load i32, i32* %sum1
-  %num38 = load i32, i32* %num
-  %tmp39 = icmp ne i32 %sum137, %num38
-  %tmp40 = and i1 %tmp36, %tmp39
-  br i1 %tmp40, label %then42, label %else47
-
-merge41:                                          ; preds = %else47, %then42
-  store i32 0, i32* %sum1
-  store i32 0, i32* %sum2
-  %num48 = load i32, i32* %num
-  %tmp49 = add i32 %num48, 1
-  store i32 %tmp49, i32* %num
+merge50:                                          ; preds = %else52, %then51
+  %i53 = load i32, i32* %i
+  %tmp54 = add i32 %i53, 1
+  store i32 %tmp54, i32* %i
   br label %while
 
-then42:                                           ; preds = %while_end33
-  %correct43 = load i32, i32* %correct
-  %num44 = load i32, i32* %num
-  %tmp45 = add i32 %correct43, %num44
-  store i32 %tmp45, i32* %correct
-  %num46 = load i32, i32* %num
-  %printf = call i32 (i8*, ...) @printf(i8* getelementptr inbounds ([4 x i8], [4 x i8]* @fmt, i32 0, i32 0), i32 %num46)
-  br label %merge41
+then51:                                           ; preds = %while_end
+  store i1 false, i1* %cont
+  br label %merge50
 
-else47:                                           ; preds = %while_end33
-  br label %merge41
+else52:                                           ; preds = %while_end
+  br label %merge50
 
-while_end50:                                      ; preds = %while
-  %printf51 = call i32 (i8*, ...) @printf(i8* getelementptr inbounds ([4 x i8], [4 x i8]* @fmt.2, i32 0, i32 0), i8* getelementptr inbounds ([7 x i8], [7 x i8]* @str, i32 0, i32 0))
-  %correct52 = load i32, i32* %correct
-  %printf53 = call i32 (i8*, ...) @printf(i8* getelementptr inbounds ([4 x i8], [4 x i8]* @fmt, i32 0, i32 0), i32 %correct52)
+while_end55:                                      ; preds = %while
   ret i32 0
 }
+
+define i32 @main() {
+entry:
+  %arr = alloca i32*
+  %n = alloca i32
+  %i = alloca i32
+  store i32 7, i32* %n
+  %malloccall = tail call i8* @malloc(i32 mul (i32 ptrtoint (i1** getelementptr (i1*, i1** null, i32 1) to i32), i32 7))
+  %init1 = bitcast i8* %malloccall to i32**
+  %init2 = bitcast i32** %init1 to i32*
+  %init4 = getelementptr i32, i32* %init2, i32 0
+  store i32 64, i32* %init4
+  %init41 = getelementptr i32, i32* %init2, i32 1
+  store i32 34, i32* %init41
+  %init42 = getelementptr i32, i32* %init2, i32 2
+  store i32 25, i32* %init42
+  %init43 = getelementptr i32, i32* %init2, i32 3
+  store i32 12, i32* %init43
+  %init44 = getelementptr i32, i32* %init2, i32 4
+  store i32 22, i32* %init44
+  %init45 = getelementptr i32, i32* %init2, i32 5
+  store i32 11, i32* %init45
+  %init46 = getelementptr i32, i32* %init2, i32 6
+  store i32 90, i32* %init46
+  store i32* %init2, i32** %arr
+  %n7 = load i32, i32* %n
+  %arr8 = load i32*, i32** %arr
+  %bubbleSort_result = call i32 @bubbleSort(i32* %arr8, i32 %n7)
+  store i32 0, i32* %i
+  br label %while
+
+while:                                            ; preds = %while_body, %entry
+  %i9 = load i32, i32* %i
+  %n10 = load i32, i32* %n
+  %tmp = icmp slt i32 %i9, %n10
+  br i1 %tmp, label %while_body, label %while_end
+
+while_body:                                       ; preds = %while
+  %i11 = load i32, i32* %i
+  %access1 = add i32 %i11, 0
+  %arr12 = load i32*, i32** %arr
+  %access2 = getelementptr i32, i32* %arr12, i32 %access1
+  %access3 = load i32, i32* %access2
+  %printf = call i32 (i8*, ...) @printf(i8* getelementptr inbounds ([4 x i8], [4 x i8]* @fmt.3, i32 0, i32 0), i32 %access3)
+  %i13 = load i32, i32* %i
+  %tmp14 = add i32 %i13, 1
+  store i32 %tmp14, i32* %i
+  br label %while
+
+while_end:                                        ; preds = %while
+  ret i32 0
+}
+
+declare noalias i8* @malloc(i32)
